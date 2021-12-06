@@ -1,9 +1,4 @@
-def part_one():
-    filename = 'input.in'
-    lines = None
-    with open(filename, 'r') as infile:
-        lines = infile.readlines()
-
+def part_one(lines):
     num_increases = 0
     lastval = None
     for line in lines:
@@ -20,6 +15,12 @@ def part_one():
 def part_two():
     pass
 
+
 if __name__ == '__main__':
-    part_one()
+    filename = 'input.in'
+    lines = None
+    with open(filename, 'r') as infile:
+        lines = infile.readlines()
+    
+    part_one(lines)
     # part_two()
