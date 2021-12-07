@@ -33,16 +33,36 @@ def part_one(commands):
 
 def part_two(commands):
     print(f'Running Part 2:')
-    
 
+    position_x = 0
+    depth = 0
+    aim = 0
+
+    for command in commands:
+        direction, magnitude = command.split()
+        magnitude = int(magnitude)
+        
+        if direction == 'forward':
+            position_x += magnitude
+            depth += aim * magnitude
+        elif direction == 'down':
+            aim += magnitude
+        elif direction == 'up':
+            aim -= magnitude
+        else:
+            print(f'ERROR: Invalid command direction: {direction}')
+            return False
     
-    print(f'    \n')
+    product = position_x * depth
+    
+    print(f'    Horizontal position = {position_x}, Depth = {depth}')
+    print(f'    ==> Product = {product}\n')
 
 
 if __name__ == '__main__':
     filename = 'input.in'
     parsed_lines = parse(filename)
 
-    part_one(parsed_lines)
+    # part_one(parsed_lines)
 
-    # part_two(parsed_lines)
+    part_two(parsed_lines)
