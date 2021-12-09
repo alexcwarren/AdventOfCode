@@ -2,7 +2,12 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    patterns, output = data.split(' | ')
+
+    patterns = tuple(patterns.split())
+    output = tuple(output.split())
+
+    return (patterns, output)
 
 
 def verify_sample(actual_vals, expected_vals):
@@ -24,10 +29,11 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=False):
+def part_one(patterns, output, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    print(patterns)
+    print(output)
 
     # TODO
     # if using_sample:
@@ -42,8 +48,8 @@ def part_two(lines, using_sample=False):
 
 if __name__ == '__main__':
     filename = 'sample_small.in'
-    lines = parse(filename)
+    patterns, output = parse(filename)
 
-    part_one(lines, filename == 'sample_small.in')
+    part_one(patterns, output, filename == 'sample_small.in')
 
     # part_two(lines, filename == 'sample.in')
