@@ -26,15 +26,23 @@ def verify_sample(actual_vals, expected_vals):
 
 def part_one(positions, using_sample=False):
     print(f'Running Part 1:')
-    
-    print(positions)
 
-    fuel_spent = 0
+    least_fuel_spent = None
+    for p in range(0, max(positions) + 1):
+        fuel_spent = 0
+        for posn in positions:
+            fuel_spent += abs(p - posn)
+        print(f'{p}: {fuel_spent}')
+
+        if least_fuel_spent is None or fuel_spent < least_fuel_spent:
+            least_fuel_spent = fuel_spent
+        elif fuel_spent > least_fuel_spent:
+            break
 
     if using_sample:
-        verify_sample(fuel_spent, 37)
+        verify_sample(least_fuel_spent, 37)
     
-    print(f'  \n')
+    print(f'  Least fuel spent = {least_fuel_spent}\n')
 
 
 def part_two(positions, using_sample=False):
