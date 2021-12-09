@@ -17,7 +17,37 @@ def parse(lines):
     return segments
 
 
-def part_one(segments):
+def print_grid(grid):
+    for row in grid:
+        for num in row:
+            if num == 0:
+                print('.', end='')
+            else:
+                print(num, end='')
+        print()
+    print()
+
+
+def verify_sample(actual_vals, expected_vals):
+    if isinstance(actual_vals, list):
+        if len(actual_vals) != len(expected_vals):
+            print('ERROR: Count of actual values != count of expected values:', end=' ')
+            print(f'len(actual_vals)={len(actual_vals)}, len(expected_vals)={len(expected_vals)}')
+            return False
+    else:
+        actual_vals = [actual_vals]
+        expected_vals = [expected_vals]
+    
+    for a,e in zip(actual_vals, expected_vals):
+        if a != e:
+            print(f'FAILED: Expected {e} got {a}')
+            return False
+    
+    print('SUCCESS')
+    return True
+
+
+def part_one(segments, using_sample=False):
     print(f'Running Part 1:')
 
     MAXVAL = max([max([max(c) for c in coords]) for coords in segments])
@@ -40,25 +70,15 @@ def part_one(segments):
     for row in grid:
         num_overlaps += len([num for num in row if num > 1])
 
-    # for row in grid:
-    #     for num in row:
-    #         if num == 0:
-    #             print('.', end='')
-    #         else:
-    #             print(num, end='')
-    #     print()
-    # print()
+    # print_grid(grid)
 
-    # When using 'sample.in' data:
-    # if num_overlaps == 5:
-    #     print('SUCCESS')
-    # else:
-    #     print('FAILURE')
+    if using_sample:
+        verify_sample(num_overlaps, 5)
     
-    print(f'    Number of overlaps = {num_overlaps}\n')
+    print(f'  Number of overlaps = {num_overlaps}\n')
 
 
-def part_two(segments):
+def part_two(segments, using_sample=False):
     print(f'Running Part 2:')
 
     MAXVAL = max([max([max(c) for c in coords]) for coords in segments])
@@ -78,25 +98,34 @@ def part_two(segments):
                 grid[y1][x] += 1
         
         # Diagonal lines
-        # TODO
+        elif abs(x2 - x1) == abs(y2 - y1):
+            xstep = 1 if x2 > x1 else -1
+            xstart = min(x1,x2) if xstep > 0 else max(x1,x2)
+            xstop = (max(x1,x2) if xstep > 0 else min(x1,x2)) + xstep
+
+            ystep = 1 if y2 > y1 else -1
+            ystart = min(y1,y2) if ystep > 0 else max(y1,y2)
+            ystop = (max(y1,y2) if ystep > 0 else min(y1,y2)) + ystep
+            
+            for x,y in zip(range(xstart, xstop, xstep), range(ystart, ystop, ystep)):
+                grid[y][x] += 1
+
+    # print_grid(grid)
     
     num_overlaps = 0
     for row in grid:
         num_overlaps += len([num for num in row if num > 1])
 
-    # When using 'sample.in' data:
-    if num_overlaps == 12:
-        print('SUCCESS')
-    else:
-        print('FAILURE')
+    if using_sample:
+        verify_sample(num_overlaps, 12)
     
-    print(f'    Number of overlaps = {num_overlaps}\n')
+    print(f'  Number of overlaps = {num_overlaps}\n')
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     segments = parse(filename)
 
-    # part_one(segments)
+    part_one(segments, filename == 'sample.in')
 
-    part_two(segments)
+    part_two(segments, filename == 'sample.in')
