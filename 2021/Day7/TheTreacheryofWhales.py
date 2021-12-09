@@ -47,7 +47,7 @@ def part_two(positions, using_sample=False):
 
     least_fuel_spent = None
     for p in range(0, max(positions) + 1):
-        fuel_spent = sum([abs(p - posn) for posn in positions])
+        fuel_spent = sum([abs(p - posn) * (abs(p - posn) + 1) // 2 for posn in positions])
 
         if least_fuel_spent is None or fuel_spent < least_fuel_spent:
             least_fuel_spent = fuel_spent
@@ -64,6 +64,6 @@ if __name__ == '__main__':
     filename = 'input.in'
     positions = parse(filename)
 
-    # part_one(positions, filename == 'sample.in')
+    part_one(positions, filename == 'sample.in')
 
     part_two(positions, filename == 'sample.in')
