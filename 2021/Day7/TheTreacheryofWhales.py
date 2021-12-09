@@ -24,26 +24,27 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=False):
+def part_one(positions, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    print(positions)
 
-    # TODO
-    # if using_sample:
-    #     verify_sample()
+    fuel_spent = 0
+
+    if using_sample:
+        verify_sample(fuel_spent, 37)
     
     print(f'  \n')
 
 
-def part_two(lines, using_sample=False):
+def part_two(positions, using_sample=False):
     pass
 
 
 if __name__ == '__main__':
     filename = 'sample.in'
-    lines = parse(filename)
+    positions = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    part_one(positions, filename == 'sample.in')
 
     # part_two(lines, filename == 'sample.in')
