@@ -61,21 +61,42 @@ def part_one(segments):
 def part_two(segments):
     print(f'Running Part 2:')
 
+    MAXVAL = max([max([max(c) for c in coords]) for coords in segments])
+    grid = [[0 for __ in range(MAXVAL + 1)] for __ in range(MAXVAL + 1)]
     
+    for seg in segments:
+        (x1,y1), (x2,y2) = seg
+
+        # Horizontal lines
+        if x1 == x2:
+            for y in range(min(y1,y2), max(y1,y2) + 1):
+                grid[y][x1] += 1
+
+        # Vertical lines
+        elif y1 == y2:
+            for x in range(min(x1,x2), max(x1,x2) + 1):
+                grid[y1][x] += 1
+        
+        # Diagonal lines
+        # TODO
+    
+    num_overlaps = 0
+    for row in grid:
+        num_overlaps += len([num for num in row if num > 1])
 
     # When using 'sample.in' data:
-    # if ...:
-    #     print('SUCCESS')
-    # else:
-    #     print('FAILURE')
+    if num_overlaps == 12:
+        print('SUCCESS')
+    else:
+        print('FAILURE')
     
-    print(f'    \n')
+    print(f'    Number of overlaps = {num_overlaps}\n')
 
 
 if __name__ == '__main__':
-    filename = 'input.in'
+    filename = 'sample.in'
     segments = parse(filename)
 
-    part_one(segments)
+    # part_one(segments)
 
-    # part_two(segments)
+    part_two(segments)
