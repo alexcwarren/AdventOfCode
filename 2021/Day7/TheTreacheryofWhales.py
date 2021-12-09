@@ -47,7 +47,7 @@ def part_two(positions, using_sample=False):
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     positions = parse(filename)
 
     part_one(positions, filename == 'sample.in')
