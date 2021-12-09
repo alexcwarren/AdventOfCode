@@ -1,3 +1,6 @@
+from typing import Deque
+
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -47,7 +50,25 @@ def part_one(fish, using_sample=False):
 
 
 def part_two(fish, using_sample=False):
-    pass
+    print(f'Running Part 2:')
+    
+    NUM_DAYS = 256
+
+    fish_timer_counts = Deque(fish.count(i) for i in range(9))
+    for __ in range(NUM_DAYS):
+        # Fish timer count (FTC) = i becomes FTC = i - 1
+        fish_timer_counts.rotate(-1)
+
+        # FTC = 0 create new fish, hence the 'rotate' above,
+        # but the original FTC = 0 need to be put back at FTC = 6
+        fish_timer_counts[6] += fish_timer_counts[8]
+
+    num_fish = sum(fish_timer_counts)
+
+    if using_sample:
+        verify_sample(num_fish, 26984457539)
+    
+    print(f'  Number of fish after {NUM_DAYS} days = {num_fish}\n')
 
 
 if __name__ == '__main__':
@@ -56,4 +77,4 @@ if __name__ == '__main__':
 
     part_one(fish, filename == 'sample.in')
 
-    # part_two(fish, filename == 'sample.in')
+    part_two(fish, filename == 'sample.in')
