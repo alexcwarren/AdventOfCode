@@ -32,8 +32,16 @@ def verify_sample(actual_vals, expected_vals):
 def part_one(patterns, output, using_sample=False):
     print(f'Running Part 1:')
     
+    # for i,seg in enumerate(segments):
+    #     print(f'#{i}: {seg}')
+    # print()
+    # for count,seg in unique_segments.items():
+    #     print(f'#{segments.index(seg)}: {seg} {count}')
+
     print(patterns)
     print(output)
+
+    # TODO Solution
 
     # TODO
     # if using_sample:
@@ -49,6 +57,26 @@ def part_two(lines, using_sample=False):
 if __name__ == '__main__':
     filename = 'sample_small.in'
     patterns, output = parse(filename)
+
+    # list of segments_used where index is the digit in question
+    segments = [
+        'abcefg',  # 0
+        'cf',      # 1
+        'acdeg',   # 2
+        'acdfg',   # 3
+        'bcdf',    # 4
+        'abdfg',   # 5
+        'abdefg',  # 6
+        'acf',     # 7
+        'abcdefg', # 8
+        'abcdfg',  # 9
+    ]
+    # count of segments needed for each digit
+    counts = [len(seg) for seg in segments]
+    # digits with uniqe count of segments
+    unique_counts = set([c for c in counts if counts.count(c) == 1])
+    # dict of uniqe segment digits in segment_count:segments pairs
+    unique_segments = {len(seg): seg for seg in segments if len(seg) in unique_counts}
 
     part_one(patterns, output, filename == 'sample_small.in')
 
