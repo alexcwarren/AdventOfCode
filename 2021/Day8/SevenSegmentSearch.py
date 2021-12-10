@@ -1,3 +1,5 @@
+from itertools import zip_longest
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -38,19 +40,45 @@ def part_one(patterns, output, using_sample=False):
     # for count,seg in unique_segments.items():
     #     print(f'#{digit_segments.index(seg)}: {seg} {count}')
 
-    print(patterns)
+    # print(patterns)
     # print(output)
 
-    segments = 'abcdefgh'
+    segments = 'abcdefg'
     signals = {seg: set(segments) for seg in segments}
+
+    patterns5 = [p for p in patterns if len(p) == 5]
+    index3 = 0
+    for i,p in enumerate(patterns5[1:], 1):
+        if sum(1 for a,b in zip(p, patterns5[0]) if a != b) > 1:
+            index3 = len(patterns5) - i # 2 if i=1, 1 if i=2
+            break
+    for s in patterns5[index3]:
+        signals[s] = signals[s].intersection(digit_segments[3])
     
     for p in patterns:
-        if len(p) in unique_counts:
+        # If number of signals in p matches a unique digit
+        len_p = len(p)
+        if len_p in unique_segments:
+            print(f'Pattern={p}')
+            # For each signal in p
             for s in p:
-                signals[s] = signals[s].intersection(unique_segments[len(p)])
-            for s in [sig for sig in signals if sig not in p]:
-                signals[s].remove()
-    print(signals)
+                print(f'{s}: {signals[s]} ==> ', end='')
+                # Intersect signal's set of possible segments with segments of unique digit
+                signals[s] = signals[s].intersection(unique_segments[len_p])
+                print(f'{signals[s]}')
+            # For each signal not in p
+            for s in set(segments).difference(p):
+                print(f'{s}: {signals[s]} ==> ', end='')
+                # Remove from signal's set of possible segments the segments of unique digit
+                # set.difference()
+                signals[s] = signals[s].difference(unique_segments[len_p])
+                print(f'{signals[s]}')
+            print()
+    
+    for s in signals:
+        print(f'{s}: {signals[s]}')
+    print([p.replace('d', 'A') for p in patterns])# if len(p) == 5])
+    print([d.replace('a', 'A') for d in digit_segments])# if len(d) == 5])
 
     # TODO
     # if using_sample:
