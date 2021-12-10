@@ -32,16 +32,25 @@ def verify_sample(actual_vals, expected_vals):
 def part_one(patterns, output, using_sample=False):
     print(f'Running Part 1:')
     
-    # for i,seg in enumerate(segments):
+    # for i,seg in enumerate(digit_segments):
     #     print(f'#{i}: {seg}')
     # print()
     # for count,seg in unique_segments.items():
-    #     print(f'#{segments.index(seg)}: {seg} {count}')
+    #     print(f'#{digit_segments.index(seg)}: {seg} {count}')
 
     print(patterns)
-    print(output)
+    # print(output)
 
-    # TODO Solution
+    segments = 'abcdefgh'
+    signals = {seg: set(segments) for seg in segments}
+    
+    for p in patterns:
+        if len(p) in unique_counts:
+            for s in p:
+                signals[s] = signals[s].intersection(unique_segments[len(p)])
+            for s in [sig for sig in signals if sig not in p]:
+                signals[s].remove()
+    print(signals)
 
     # TODO
     # if using_sample:
@@ -59,7 +68,7 @@ if __name__ == '__main__':
     patterns, output = parse(filename)
 
     # list of segments_used where index is the digit in question
-    segments = [
+    digit_segments = [
         'abcefg',  # 0
         'cf',      # 1
         'acdeg',   # 2
@@ -72,11 +81,11 @@ if __name__ == '__main__':
         'abcdfg',  # 9
     ]
     # count of segments needed for each digit
-    counts = [len(seg) for seg in segments]
+    counts = [len(seg) for seg in digit_segments]
     # digits with uniqe count of segments
     unique_counts = set([c for c in counts if counts.count(c) == 1])
     # dict of uniqe segment digits in segment_count:segments pairs
-    unique_segments = {len(seg): seg for seg in segments if len(seg) in unique_counts}
+    unique_segments = {len(seg): seg for seg in digit_segments if len(seg) in unique_counts}
 
     part_one(patterns, output, filename == 'sample_small.in')
 
