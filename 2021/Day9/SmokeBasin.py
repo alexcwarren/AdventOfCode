@@ -2,7 +2,7 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    return [[int(d) for d in datum] for datum in data.split('\n')]
 
 
 def verify_sample(actual_vals, expected_vals):
