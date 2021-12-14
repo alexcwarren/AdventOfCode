@@ -2,7 +2,12 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    lines = data.split('\n')
+
+    dots = [tuple(int(n) for n in line.split(',')) for line in lines if ',' in line]
+    folds = [tuple(operand for operand in line.replace('fold along ', '').split('=')) for line in lines if 'fold' in line]
+    folds = [(var, int(num)) for var,num in folds]
+    return (dots, folds)
 
 
 def verify_sample(actual_vals, expected_vals):
@@ -24,10 +29,11 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=False):
+def part_one(dots, folds, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    print(dots)
+    print(folds)
 
     # TODO
     # if using_sample:
@@ -42,8 +48,8 @@ def part_two(lines, using_sample=False):
 
 if __name__ == '__main__':
     filename = 'sample.in'
-    lines = parse(filename)
+    dots, folds = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    part_one(dots, folds, filename == 'sample.in')
 
     # part_two(lines, filename == 'sample.in')
