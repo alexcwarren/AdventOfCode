@@ -4,9 +4,8 @@ def parse(filename):
         data = infile.read().strip()
     lines = data.split('\n')
 
-    dots = [tuple(int(n) for n in line.split(',')) for line in lines if ',' in line]
-    folds = [tuple(operand for operand in line.replace('fold along ', '').split('=')) for line in lines if 'fold' in line]
-    folds = [(var, int(num)) for var,num in folds]
+    dots = [{'x':int(line.split(',')[0]), 'y':int(line.split(',')[1])} for line in lines if ',' in line]
+    folds = [(var, int(num)) for var,num in [line.replace('fold along ', '').split('=') for line in lines if 'fold' in line]]
     return (dots, folds)
 
 
@@ -31,15 +30,28 @@ def verify_sample(actual_vals, expected_vals):
 
 def part_one(dots, folds, using_sample=False):
     print(f'Running Part 1:')
-    
-    print(dots)
-    print(folds)
 
-    # TODO
-    # if using_sample:
-    #     verify_sample()
+    for axis,value in folds:
+        for dot in dots:
+            if dot[axis] > value:
+                dot[axis] = 2 * value - dot[axis]
+        # dots = [d for d in dots if d[axis] < value]
+        if using_sample:
+            break
     
-    print(f'  \n')
+    num_dots = len(set((d['x'], d['y']) for d in dots))
+    # output = [['.' for __ in range(20)] for ___ in range(20)]
+    # for r,row in enumerate(output):
+    #     for c,cell in enumerate(row):
+    #         if {'x':c, 'y':r} in dots:
+    #             print('#', end='')
+    #         else:
+    #             print(cell, end='')
+    #     print()
+    if using_sample:
+        verify_sample(num_dots, 17)
+    
+    print(f'  Number of dots = {num_dots}\n')
 
 
 def part_two(lines, using_sample=False):
@@ -47,7 +59,7 @@ def part_two(lines, using_sample=False):
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     dots, folds = parse(filename)
 
     part_one(dots, folds, filename == 'sample.in')
