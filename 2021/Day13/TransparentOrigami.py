@@ -35,9 +35,7 @@ def part_one(dots, folds, using_sample=False):
         for dot in dots:
             if dot[axis] > value:
                 dot[axis] = 2 * value - dot[axis]
-        # dots = [d for d in dots if d[axis] < value]
-        if using_sample:
-            break
+        break # Only do one fold for this part
     
     num_dots = len(set((d['x'], d['y']) for d in dots))
     # output = [['.' for __ in range(20)] for ___ in range(20)]
