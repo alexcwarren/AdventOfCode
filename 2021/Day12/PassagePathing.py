@@ -24,18 +24,22 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=[False,False,False]):
+def part_one(connections, using_sample=[False,False,False]):
     print(f'Running Part 1:')
     
-    print(lines)
+    path = ''
+    node = START
+    for cxn1,cxn2 in (c for c in connections if node in c):
+        path += node
+        node = cxn1 if cxn1 != node else cxn2
 
     # TODO
     # if using_sample[0]:
-    #     verify_sample()
+    #     verify_sample(num_paths, 10)
     # if using_sample[1]:
-    #     verify_sample()
+    #     verify_sample(num_paths, 19)
     # if using_sample[2]:
-    #     verify_sample()
+    #     verify_sample(num_paths, 226)
     
     print(f'  \n')
 
@@ -46,8 +50,9 @@ def part_two(lines, using_sample=False):
 
 if __name__ == '__main__':
     filename = 'sample_small.in'
-    lines = parse(filename)
+    connections = parse(filename)
+    START = 'start'
 
-    part_one(lines, [filename == file for file in ('sample_small.in', 'sample.in', 'sample_large.in')])
+    part_one(connections, [filename == file for file in ('sample_small.in', 'sample.in', 'sample_large.in')])
 
     # part_two(lines, filename == 'sample.in')
