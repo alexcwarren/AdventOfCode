@@ -129,13 +129,37 @@ def part_one(octopus_levels, using_sample=False):
 
 
 def part_two(octopus_levels, using_sample=False):
-    pass
+    print(f'Running Part 2:')
+    
+    Octopus.MAX_ROW = len(octopus_levels) - 1
+    Octopus.MAX_COL = len(octopus_levels[Octopus.MAX_ROW]) - 1
+    octopuses = OctopusList(octopus_levels)
+
+    num_steps = 500
+    step_all_flash = 0
+    for step in range(1, num_steps + 1):
+        for row in octopuses:
+            for octo in row:
+                octo.step()
+
+        if all([all([o.flashed for o in row]) for row in octopuses]):
+            step_all_flash = step
+            break
+        
+        for row in octopuses:
+            for octo in row:
+                octo.reset()
+
+    if using_sample:
+        verify_sample(step_all_flash, 195)
+    
+    print(f'  First step all flash = {step_all_flash}\n')
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     octopus_levels = parse(filename)
 
     part_one(octopus_levels, filename == 'sample.in')
 
-    # part_two(octopus_levels, filename == 'sample.in')
+    part_two(octopus_levels, filename == 'sample.in')
