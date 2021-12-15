@@ -1,3 +1,6 @@
+from typing import List
+
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -32,21 +35,17 @@ def print_octopuses(octos):
     print()
 
 
-def part_one(octopus_levels, using_sample=False):
-    print(f'Running Part 1:')
-    
-    MAX_ROW = len(octopus_levels) - 1
-    MAX_COL = len(octopus_levels[MAX_ROW]) - 1
-    octopuses = list()
-
-    class Octopus:
+class Octopus:
         FLASH_THRESHOLD = 9
+        MAX_ROW = 0
+        MAX_COL = 0
 
         def __init__(self, level, coordinates):
             self.level = level
             self.flashed = False
             self.row, self.col = coordinates
-            self.adjacents = self.__determine_adjacents()
+            self.__adjacents_coords = self.__determine_adjacents()
+            self.adjacents = list()
         
         def __determine_adjacents(self):
             adjacents = list()
@@ -56,9 +55,13 @@ def part_one(octopus_levels, using_sample=False):
             for mod_r,mod_c in ((0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1,1)):
                 adj_r = self.row + mod_r
                 adj_c = self.col + mod_c
-                if 0 <= adj_r <= MAX_ROW and 0 <= adj_c <= MAX_COL:
+                if 0 <= adj_r <= Octopus.MAX_ROW and 0 <= adj_c <= Octopus.MAX_COL:
                     adjacents.append((adj_r,adj_c))
             return tuple((r,c) for r,c in adjacents)
+        
+        def assign_adjacents(self, octos_list):
+            for r,c in self.__adjacents_coords:
+                self.adjacents.append(octos_list[r][c])
         
         def step(self):
             if self.flashed:
@@ -76,10 +79,10 @@ def part_one(octopus_levels, using_sample=False):
             self.flashed = True
             self.level = 0
 
-            num_adj_flashes = 1
-            for r,c in self.adjacents:
-                num_adj_flashes += octopuses[r][c].step()
-            return num_adj_flashes
+            num_adj_flashes = 0
+            for adj_oct in self.adjacents:
+                num_adj_flashes += adj_oct.step()
+            return 1 + num_adj_flashes
 
         def reset(self):
             self.flashed = False
@@ -92,26 +95,32 @@ def part_one(octopus_levels, using_sample=False):
             string += f'  level={self.level} flashed={self.flashed}\n'
             string += f'  adjacents={self.adjacents}\n'
             return string
-    
-    octopuses = [[Octopus(level, (r,c)) for c,level in enumerate(row)] for r,row in enumerate(octopus_levels)]
-    # for row in octopuses:
-    #     for octo in row:
-    #         print(repr(octo))
 
-    # print_octopuses(octopuses)
+
+class OctopusList(List):
+    def __init__(self, levels):
+        super().__init__([[Octopus(level, (r,c)) for c,level in enumerate(row)] for r,row in enumerate(levels)])
+        for row in self:
+            for octo in row:
+                octo.assign_adjacents(self)
+
+
+def part_one(octopus_levels, using_sample=False):
+    print(f'Running Part 1:')
+    
+    Octopus.MAX_ROW = len(octopus_levels) - 1
+    Octopus.MAX_COL = len(octopus_levels[Octopus.MAX_ROW]) - 1
+    octopuses = OctopusList(octopus_levels)
 
     num_steps = 100
     num_flashes = 0
-    for step in range(1,num_steps + 1):
-        # print(f'Step {step}:')
-        for r,row in enumerate(octopuses):
-            for c,octo in enumerate(row):
+    for __ in range(1, num_steps + 1):
+        for row in octopuses:
+            for octo in row:
                 num_flashes += octo.step()
-        # print_octopuses(octopuses)
-        for r,row in enumerate(octopuses):
-            for c,octo in enumerate(row):
+        for row in octopuses:
+            for octo in row:
                 octo.reset()
-        # print_octopuses(octopuses)
 
     if using_sample:
         verify_sample(num_flashes, 1656)
@@ -119,14 +128,14 @@ def part_one(octopus_levels, using_sample=False):
     print(f'  Number of flashes = {num_flashes}\n')
 
 
-def part_two(lines, using_sample=False):
+def part_two(octopus_levels, using_sample=False):
     pass
 
 
 if __name__ == '__main__':
     filename = 'sample.in'
-    octopuses = parse(filename)
+    octopus_levels = parse(filename)
 
-    part_one(octopuses, filename == 'sample.in')
+    part_one(octopus_levels, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    # part_two(octopus_levels, filename == 'sample.in')
