@@ -2,7 +2,7 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    return tuple(tuple(line.split('-')) for line in data.split('\n'))
 
 
 def verify_sample(actual_vals, expected_vals):
