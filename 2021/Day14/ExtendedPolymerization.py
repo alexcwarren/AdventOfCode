@@ -2,7 +2,11 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    lines = data.split('\n')
+
+    template = lines[0]
+    pairs = {line.split(' -> ')[0]:line.split(' -> ')[1] for line in lines[2:]}
+    return (template, pairs)
 
 
 def verify_sample(actual_vals, expected_vals):
@@ -24,10 +28,11 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=False):
+def part_one(template, pairs, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    print(template)
+    print(pairs)
 
     # TODO
     # if using_sample:
@@ -42,8 +47,8 @@ def part_two(lines, using_sample=False):
 
 if __name__ == '__main__':
     filename = 'sample.in'
-    lines = parse(filename)
+    template, pairs = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    part_one(template, pairs, filename == 'sample.in')
 
     # part_two(lines, filename == 'sample.in')
