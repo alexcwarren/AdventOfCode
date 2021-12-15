@@ -28,6 +28,17 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
+def print_dots(dot_set):
+    output = [['.' for __ in range(max([d[0] for d in dot_set]) + 1)] for ___ in range(max([d[1] for d in dot_set]) + 1)]
+    for r,row in enumerate(output):
+        for c,cell in enumerate(row):
+            if {'x':c, 'y':r} in dots:
+                print('#', end='')
+            else:
+                print(cell, end='')
+        print()
+
+
 def part_one(dots, folds, using_sample=False):
     print(f'Running Part 1:')
 
@@ -38,22 +49,24 @@ def part_one(dots, folds, using_sample=False):
         break # Only do one fold for this part
     
     num_dots = len(set((d['x'], d['y']) for d in dots))
-    # output = [['.' for __ in range(20)] for ___ in range(20)]
-    # for r,row in enumerate(output):
-    #     for c,cell in enumerate(row):
-    #         if {'x':c, 'y':r} in dots:
-    #             print('#', end='')
-    #         else:
-    #             print(cell, end='')
-    #     print()
+
     if using_sample:
         verify_sample(num_dots, 17)
     
     print(f'  Number of dots = {num_dots}\n')
 
 
-def part_two(lines, using_sample=False):
-    pass
+def part_two(dots, folds, using_sample=False):
+    print(f'Running Part 2:')
+
+    for axis,value in folds:
+        for dot in dots:
+            if dot[axis] > value:
+                dot[axis] = 2 * value - dot[axis]
+    
+    dot_set = set((d['x'], d['y']) for d in dots)
+    print_dots(dot_set)
+    print()
 
 
 if __name__ == '__main__':
@@ -62,4 +75,4 @@ if __name__ == '__main__':
 
     part_one(dots, folds, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    part_two(dots, folds, filename == 'sample.in')
