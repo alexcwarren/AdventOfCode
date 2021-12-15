@@ -24,6 +24,14 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
+def print_octopuses(octos):
+    for row in octos:
+        for octo in row:
+            print(octo, end='')
+        print()
+    print()
+
+
 def part_one(octopus_levels, using_sample=False):
     print(f'Running Part 1:')
     
@@ -53,6 +61,9 @@ def part_one(octopus_levels, using_sample=False):
             return tuple((r,c) for r,c in adjacents)
         
         def step(self):
+            if self.flashed:
+                return 0
+            
             self.level += 1
 
             if self.level > Octopus.FLASH_THRESHOLD:
@@ -62,7 +73,6 @@ def part_one(octopus_levels, using_sample=False):
         def flash(self):
             if self.flashed:
                 return 0
-            
             self.flashed = True
             self.level = 0
 
@@ -88,15 +98,20 @@ def part_one(octopus_levels, using_sample=False):
     #     for octo in row:
     #         print(repr(octo))
 
+    # print_octopuses(octopuses)
+
+    num_steps = 100
     num_flashes = 0
-    for step in range(10):
-        for row in octopuses:
-            for octo in row:
+    for step in range(1,num_steps + 1):
+        # print(f'Step {step}:')
+        for r,row in enumerate(octopuses):
+            for c,octo in enumerate(row):
                 num_flashes += octo.step()
+        # print_octopuses(octopuses)
+        for r,row in enumerate(octopuses):
+            for c,octo in enumerate(row):
                 octo.reset()
-                print(octo, end='')
-            print()
-        print()
+        # print_octopuses(octopuses)
 
     if using_sample:
         verify_sample(num_flashes, 1656)
