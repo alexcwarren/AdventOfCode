@@ -37,19 +37,23 @@ class BITS_Packet:
     }
 
     def __init__(self, packet_str, is_hex=False):
-        self.binary = self.to_binary(packet_str) if is_hex else packet_str
+        self.hex = None
+        if is_hex:
+            self.hex = packet_str
+            self.binary = self.to_binary(packet_str)
+        else:
+            self.binary = packet_str
+        self.init_binary = self.binary
         self.length = 0
         self.version = int(self.extract_bits(3), 2)
         self.typeID = int(self.extract_bits(3), 2)
         self.operation = BITS_Packet.operations[self.typeID]
-        self.contains_packets = False
         self.lengthID = None
         self.contents = list()
 
         if self.operation == 'literal':
             self.contents.append(self.parse_literal())
         else:
-            self.contains_packets = True
             self.lengthID = self.extract_bits(1)
             if self.lengthID == '0':
                 length_subpackets = int(self.extract_bits(15), 2)
@@ -110,16 +114,39 @@ class BITS_Packet:
         return version_sum
     
     def evaluate(self):
-        print(self.operation)
+        print(repr(self))
         return 0
     
     def __repr__(self):
-        string = f'{self.get_version_sum()} --> {str(self)}:'
-        string += f'{self.contents}'
+        string = ''
+        if self.hex is not None:
+            string += f'{self.hex}\n'
+        else:
+            string += f'{self.init_binary}\n'
+        string += f'  length={self.length}\n'
+        string += f'  version={self.version}\n'
+        string += f'  typeID={self.typeID}\n'
+        string += f'  operation={self.operation}\n'
+        string += f'  lengthID={self.lengthID}\n'
+        string +=  '  contents=['
+        for i,c in enumerate(self.contents):
+            if i > 0:
+                string += ', '
+            string += f'{str(c)}'
+        string += ']\n'
         return string
 
     def __str__(self):
-        return f'{self.version}-{self.typeID}'
+        string = ''
+        if self.operation != 'literal':
+            string = f'{self.operation}('
+        for i,c in enumerate(self.contents):
+            if i > 0:
+                string += ', '
+            string += str(c)
+        if self.operation != 'literal':
+            string += ')'
+        return string
 
 
 def part_one(packets, using_sample=False):
