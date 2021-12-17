@@ -1,3 +1,6 @@
+from math import prod
+
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -25,7 +28,7 @@ def verify_sample(actual_vals, expected_vals):
 
 
 class BITS_Packet:
-    operations = {
+    operationIDs = {
         0: 'sum',
         1: 'product',
         2: 'minimum',
@@ -34,6 +37,16 @@ class BITS_Packet:
         5: 'greater_than',
         6: 'less_than',
         7: 'equal_to'
+    }
+    
+    operations = {
+        'sum': (lambda x : sum(x)),
+        'product': (lambda x : prod(x)),
+        'minimum': (lambda x : min(x)),
+        'maximum': (lambda x : max(x)),
+        'greater_than': (lambda x : 1 if x[0] > x[1] else 0),
+        'less_than': (lambda x : 1 if x[0] < x[1] else 0),
+        'equal_to': (lambda x : 1 if x[0] == x[1] else 0)
     }
 
     def __init__(self, packet_str, is_hex=False):
@@ -47,11 +60,11 @@ class BITS_Packet:
         self.length = 0
         self.version = int(self.extract_bits(3), 2)
         self.typeID = int(self.extract_bits(3), 2)
-        self.operation = BITS_Packet.operations[self.typeID]
+        self.operationID = BITS_Packet.operationIDs[self.typeID]
         self.lengthID = None
         self.contents = list()
 
-        if self.operation == 'literal':
+        if self.operationID == 'literal':
             self.contents.append(self.parse_literal())
         else:
             self.lengthID = self.extract_bits(1)
@@ -114,8 +127,23 @@ class BITS_Packet:
         return version_sum
     
     def evaluate(self):
-        print(repr(self))
+        print(self)
         return 0
+        # operands = list()
+        # print('evaluating...')
+        # print(repr(self))
+        # for c in self.contents:
+        #     if isinstance(c, BITS_Packet):
+        #         if c.operationID == 'literal':
+        #             return c.contents
+        #             # operands.extend(('literal', c.contents))
+        #         else:
+        #             operands.append(c.evaluate())
+        #     else:
+        #         return c
+        #         # operands.append(c)
+        # print(operands)
+        # return (self.operationID, operands)
     
     def __repr__(self):
         string = ''
@@ -126,7 +154,7 @@ class BITS_Packet:
         string += f'  length={self.length}\n'
         string += f'  version={self.version}\n'
         string += f'  typeID={self.typeID}\n'
-        string += f'  operation={self.operation}\n'
+        string += f'  operation={self.operationID}\n'
         string += f'  lengthID={self.lengthID}\n'
         string +=  '  contents=['
         for i,c in enumerate(self.contents):
@@ -138,13 +166,13 @@ class BITS_Packet:
 
     def __str__(self):
         string = ''
-        if self.operation != 'literal':
-            string = f'{self.operation}('
+        if self.operationID != 'literal':
+            string = f'{self.operationID}('
         for i,c in enumerate(self.contents):
             if i > 0:
                 string += ', '
             string += str(c)
-        if self.operation != 'literal':
+        if self.operationID != 'literal':
             string += ')'
         return string
 
@@ -189,8 +217,8 @@ def part_two(lines, using_sample=False):
         packet = BITS_Packet(hex_packet, is_hex=True)
         result = packet.evaluate()
         
-        if using_sample:
-            verify_sample(result, expected_results[i])
+        # if using_sample:
+        #     verify_sample(result, expected_results[i])
         
         print(f'  {hex_packet} result = {result}\n')
 
