@@ -25,18 +25,28 @@ def verify_sample(actual_vals, expected_vals):
 
 
 class BITS_Packet:
-    Literal_ID = 4
+    operations = {
+        0: 'sum',
+        1: 'product',
+        2: 'minimum',
+        3: 'maximum',
+        4: 'literal',
+        5: 'greater_than',
+        6: 'less_than',
+        7: 'equal_to'
+    }
 
     def __init__(self, packet_str, is_hex=False):
         self.binary = self.to_binary(packet_str) if is_hex else packet_str
         self.length = 0
         self.version = int(self.extract_bits(3), 2)
         self.typeID = int(self.extract_bits(3), 2)
+        self.operation = BITS_Packet.operations[self.typeID]
         self.contains_packets = False
         self.lengthID = None
         self.contents = list()
 
-        if self.typeID == BITS_Packet.Literal_ID:
+        if self.operation == 'literal':
             self.contents.append(self.parse_literal())
         else:
             self.contains_packets = True
@@ -99,6 +109,10 @@ class BITS_Packet:
             version_sum += c.get_version_sum()
         return version_sum
     
+    def evaluate(self):
+        print(self.operation)
+        return 0
+    
     def __repr__(self):
         string = f'{self.get_version_sum()} --> {str(self)}:'
         string += f'{self.contents}'
@@ -134,13 +148,30 @@ def part_one(packets, using_sample=False):
 
 
 def part_two(lines, using_sample=False):
-    pass
+    expected_results = [
+        6,  # D2FE28
+        9,  # 38006F45291200
+        14, # EE00D40C823060
+        16, # 8A004A801A8002F478
+        12, # 620080001611562C8802118E34
+        23, # C0015000016115A2E0802F182340
+        31  # A0016C880162017C3686B18A3D4780
+    ]
+    
+    for i,hex_packet in enumerate(packets):
+        packet = BITS_Packet(hex_packet, is_hex=True)
+        result = packet.evaluate()
+        
+        if using_sample:
+            verify_sample(result, expected_results[i])
+        
+        print(f'  {hex_packet} result = {result}\n')
 
 
 if __name__ == '__main__':
-    filename = 'input.in'
+    filename = 'sample.in'
     packets = parse(filename)
 
-    part_one(packets, filename == 'sample.in')
+    # part_one(packets, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    part_two(packets, filename == 'sample.in')
