@@ -43,22 +43,14 @@ class BITS_Packet:
             self.lengthID = self.extract_bits(1)
             if self.lengthID == '0':
                 length_subpackets = int(self.extract_bits(15), 2)
-                subpackets = list()
                 while length_subpackets > 0:
-                    if self.binary == '': input('EMPTY')
-                    subpacket = BITS_Packet(self.extract_bits())
-                    self.binary = subpacket.binary
-                    self.length += subpacket.length
+                    subpacket = self.parse_subpacket()
                     length_subpackets -= subpacket.length
-                    subpackets.append(subpacket)
-                self.contents= subpackets
+                    self.contents.append(subpacket)
             else:
                 num_subpackets = int(self.extract_bits(11), 2)
                 while len(self.contents) < num_subpackets:
-                    if self.binary == '': input('EMPTY')
-                    subpacket = BITS_Packet(self.extract_bits())
-                    self.binary = subpacket.binary
-                    self.length += subpacket.length
+                    subpacket = self.parse_subpacket()
                     self.contents.append(subpacket)
     
     def to_binary(self, hex_str):
@@ -94,6 +86,12 @@ class BITS_Packet:
             if first_bit == '0':
                 break
         return int(bin_literal, 2)
+    
+    def parse_subpacket(self):
+        sub_packet = BITS_Packet(self.extract_bits())
+        self.binary = sub_packet.binary
+        self.length += sub_packet.length
+        return sub_packet
     
     def get_version_sum(self):
         version_sum = self.version
