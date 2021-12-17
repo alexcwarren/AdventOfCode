@@ -1,4 +1,4 @@
-import pdb
+# import pdb
 
 
 def parse(filename):
@@ -30,13 +30,14 @@ def verify_sample(actual_vals, expected_vals):
 class BITS_Packet:
     Literal_ID = 4
 
-    def __init__(self, bin_str):
-        self.binary = bin_str
-        breakpoint()
-        # Get 1st three bits for version
+    def __init__(self, packet_str, is_hex=False):
+        self.binary = self.to_binary(packet_str) if is_hex else packet_str
+        # print(f'Parsing {self.binary}')
+        self.length = 0
         self.version = int(self.extract_bits(3), 2)
-        # Get next three bits for type ID
+        # print(f'version={self.version}')
         self.typeID = int(self.extract_bits(3), 2)
+        # print(f'typeID={self.typeID}')
         self.contains_packets = False
         self.lengthID = None
         self.contents = list()
@@ -44,66 +45,125 @@ class BITS_Packet:
         # If type ID = 4
         if self.typeID == BITS_Packet.Literal_ID:
             # Parse remaining bits for literals
-            self.contents = self.parse_literals()
+            self.contents.append(self.parse_literal())
         # Else
         else:
             # Pass remaining bits for analysis
             self.contains_packets = True
             self.lengthID = self.extract_bits(1)
+            # print(f'lengthID={self.lengthID}')
             if self.lengthID == '0':
                 length_subpackets = int(self.extract_bits(15), 2)
-                breakpoint()
-                self.contents.append(BITS_Packet(self.extract_bits(length_subpackets)))
+                # print(f'length_subpackets={length_subpackets}')
+                # print(f'Processing subpackets...')
+                subpackets = list()
+                while length_subpackets > 0:
+                    if self.binary == '': input('EMPTY')
+                    subpacket = BITS_Packet(self.extract_bits())
+                    # print(f'subpacket.binary={subpacket.binary}')
+                    self.binary = subpacket.binary
+                    # print(f'subpacket.length={subpacket.length}')
+                    self.length += subpacket.length
+                    length_subpackets -= subpacket.length
+                    # print(f'length_subpackets={length_subpackets}')
+                    subpackets.append(subpacket)
+                self.contents= subpackets
             else:
                 num_subpackets = int(self.extract_bits(11), 2)
-                for __ in range(num_subpackets):
-                    breakpoint()
-                    self.contents.append(BITS_Packet(self.extract_bits(11)))
-        
-        if len(self.binary) >= 11:
-            self.contents.append(BITS_Packet(self.binary))
+                # print(f'num_subpackets={num_subpackets}')
+                while len(self.contents) < num_subpackets:
+                    if self.binary == '': input('EMPTY')
+                    subpacket = BITS_Packet(self.extract_bits())
+                    self.binary = subpacket.binary
+                    self.length += subpacket.length
+                    self.contents.append(subpacket)
     
-    def extract_bits(self, stop):
-        binary = self.binary[:stop]
-        self.binary = self.binary[stop:]
+    def to_binary(self, hex_str):
+        hex_to_bin = {hex(n)[2:].upper() : bin(n)[2:].zfill(4) for n in range(16)}
+        
+        binary = ''
+        for h in hex_str:
+            binary += hex_to_bin[h]
         return binary
 
-    def parse_literals(self):
-        contents = list()
+    def extract_bits(self, stop=None):
+        inc_length = True
+        if stop is None:
+            stop = len(self.binary)
+            inc_length = False
+        elif stop > len(self.binary):
+            return ''
+        
+        binary = self.binary[:stop]
+        self.binary = self.binary[stop:]
+        # print(f'Extracting {binary}. {self.binary}')
+
+        if inc_length:
+            self.length += len(binary)
+
+        return binary
+
+    def parse_literal(self):
+        bin_literal = ''
         len_binary = len(self.binary)
         for i in range(0, len_binary, 5):
             first_bit = self.extract_bits(1)
-            contents.append(int(self.extract_bits(4), 2))
-            # bin_str[i + 1 : i + 5]
+            # print(f'first_bit={first_bit}')
+            bin_literal += self.extract_bits(4)
+            # print(f'bin_literal={bin_literal}')
             if first_bit == '0':
                 break
-        return contents
+        return int(bin_literal, 2)
+    
+    def get_version_sum(self):
+        version_sum = self.version
+        for c in (c for c in self.contents if isinstance(c, BITS_Packet)):
+            version_sum += c.get_version_sum()
+        return version_sum
     
     def __repr__(self):
-        string = f'{str(self)}:'
+        string = f'{self.get_version_sum()} --> {str(self)}:'
         string += f'{self.contents}'
         return string
 
     def __str__(self):
-        return f'{self.version} {self.typeID}'
+        return f'{self.version}-{self.typeID}'
 
 
 def part_one(packets, using_sample=False):
-    print(f'Running Part 1:')
-    
-    for hex_packet in packets:
-        print(hex_packet)
-        # Convert packet from HEX to BIN
-        binary = str(bin(int(hex_packet, 16)))[2:]
-        packet = BITS_Packet(binary)
-        print(repr(packet))
-        print()
+    # print()
+    # print('*' * 120)
+    # print(f"*{' ' * 118}*")
+    # print(f"*{' ' * 52}--- START ---{' ' * 53}*")
+    # print(f"*{' ' * 118}*")
+    # print('*' * 120)
+    # print(f'Running Part 1:')
 
-    # TODO
-    # if using_sample:
-    #     verify_sample()
+    expected_version_sums = [
+        6, # D2FE28
+        9, # 38006F45291200
+        14, # EE00D40C823060
+        16, # 8A004A801A8002F478
+        12, # 620080001611562C8802118E34
+        23, # C0015000016115A2E0802F182340
+        31  # A0016C880162017C3686B18A3D4780
+    ]
     
-    print(f'  \n')
+    bits_packets = dict()
+    actual_version_sums = list()
+    for i,hex_packet in enumerate(packets):
+        # print(hex_packet)
+        packet = BITS_Packet(hex_packet, is_hex=True)
+        bits_packets[hex_packet] = packet
+        actual_version_sums.append(packet.get_version_sum())
+        # print(hex_packet, repr(packet))
+        if using_sample:
+            verify_sample(packet.get_version_sum(), expected_version_sums[i])
+    #     print()
+    # print()
+
+    for h,bp in bits_packets.items():
+        print(f'  {h} version sum = {bp.get_version_sum()}\n')
 
 
 def part_two(lines, using_sample=False):
@@ -111,7 +171,7 @@ def part_two(lines, using_sample=False):
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     packets = parse(filename)
 
     part_one(packets, filename == 'sample.in')
