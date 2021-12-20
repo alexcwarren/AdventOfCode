@@ -3,7 +3,7 @@ def parse(filename):
     with open(filename, 'r') as infile:
         data = infile.read().strip()
     axis_ranges = [d.strip() for d in data.split(':')[1].split(',')]
-    return tuple(tuple(ar.split('=')[1].split('..')) for ar in axis_ranges)
+    return tuple(tuple(int(n) for n in ar.split('=')[1].split('..')) for ar in axis_ranges)
 
 
 def verify_sample(actual_vals, expected_vals):
@@ -27,8 +27,12 @@ def verify_sample(actual_vals, expected_vals):
 
 def part_one(axis_ranges, using_sample=False):
     print(f'Running Part 1:')
+
+    x_range, y_range = axis_ranges
+    mid_x = sum(x_range) // 2
     
-    print(axis_ranges)
+    for x1,x2 in zip(range(mid_x,0,-1), range(mid_x,max(x_range) + 1)):
+        print(x1, x2)
 
     # TODO
     # if using_sample:
