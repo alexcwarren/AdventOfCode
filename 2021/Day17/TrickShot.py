@@ -2,7 +2,8 @@ def parse(filename):
     data = None
     with open(filename, 'r') as infile:
         data = infile.read().strip()
-    return data.split('\n')
+    axis_ranges = [d.strip() for d in data.split(':')[1].split(',')]
+    return tuple(tuple(ar.split('=')[1].split('..')) for ar in axis_ranges)
 
 
 def verify_sample(actual_vals, expected_vals):
@@ -24,10 +25,10 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
-def part_one(lines, using_sample=False):
+def part_one(axis_ranges, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    print(axis_ranges)
 
     # TODO
     # if using_sample:
@@ -42,8 +43,8 @@ def part_two(lines, using_sample=False):
 
 if __name__ == '__main__':
     filename = 'sample.in'
-    lines = parse(filename)
+    axis_ranges = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    part_one(axis_ranges, filename == 'sample.in')
 
     # part_two(lines, filename == 'sample.in')
