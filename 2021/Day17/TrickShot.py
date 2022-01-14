@@ -1,3 +1,6 @@
+from itertools import zip_longest
+
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -25,14 +28,54 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
+class Launchpad:
+    def __init__(self, x_range, y_range):
+        self.x_range = x_range
+        self.y_range = y_range
+    
+    def launch_probes(self):
+        pass
+
+    def launch_probe(self, v_0x, v_0y):
+        x = y = max_y = 0
+        x_is_on_target = y_is_on_target = False
+        for step in range(100):
+            y += v_0y - step
+            x = x + v_0x - step if x >= 0 else 0
+
+            if self.is_x_on_target(x):
+                x_is_on_target = True
+            if self.is_y_on_target(y):
+                y_is_on_target = True
+            if ((x_is_on_target and not self.is_x_on_target(x))
+                    or (y_is_on_target and not self.is_y_on_target(y))):
+                break
+            
+            max_y = y if y > max_y else max_y
+        
+        return max_y
+    
+    def __is_on_target(self, axis, axis_range):
+        return min(axis_range) <= axis <= max(axis_range)
+    
+    def is_x_on_target(self, x):
+        return self.__is_on_target(x, self.x_range)
+    
+    def is_y_on_target(self, y):
+        return self.__is_on_target(y, self.y_range)
+
+
 def part_one(axis_ranges, using_sample=False):
     print(f'Running Part 1:')
 
     x_range, y_range = axis_ranges
-    mid_x = sum(x_range) // 2
+    launchpad = Launchpad(x_range, y_range)
+    '''
+    Find ideal x:
+    let x = avg(x_range) // 2
+    let y = x
     
-    for x1,x2 in zip(range(mid_x,0,-1), range(mid_x,max(x_range) + 1)):
-        print(x1, x2)
+    '''
 
     # TODO
     # if using_sample:
