@@ -46,13 +46,20 @@ def part_one(lines, using_sample=False):
 
 
 def part_two(lines, using_sample=False):
-    pass
+    print(f'Running Part 2:')
+
+    print(lines)
+    
+    # if using_sample:
+    #     verify_sample(positions, [1, 5])
+    
+    print(f'  \n')
 
 
 if __name__ == '__main__':
-    filename = 'input.in'
+    filename = 'sample2.in'
     lines = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    # part_one(lines, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    part_two(lines, filename == 'sample2.in')
