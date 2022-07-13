@@ -1,3 +1,6 @@
+from functools import reduce
+
+
 def parse(filename):
     data = None
     with open(filename, 'r') as infile:
@@ -27,17 +30,18 @@ def verify_sample(actual_vals, expected_vals):
 def part_one(lines, using_sample=False):
     print(f'Running Part 1:')
     
+    paper_areas = list()
     for line in lines:
-        dimensions = line.split('x')
-        print(dimensions)
+        dimensions = [int(x) for x in line.split('x')]
         length, width, height = dimensions
-        print(length, width, height)
+        total_area = 2*length*width + 2*width*height + 2*length*height
+        min_area = reduce(lambda x, y : x * y, dimensions) // max(dimensions)
+        paper_areas.append(total_area + min_area)
 
-    # TODO
-    # if using_sample:
-    #     verify_sample(paper_areas, [58, 43])
+    if using_sample:
+        verify_sample(paper_areas, [58, 43])
     
-    print(f'  \n')
+    print(f'  {sum(paper_areas)}\n')
 
 
 def part_two(lines, using_sample=False):
@@ -45,7 +49,7 @@ def part_two(lines, using_sample=False):
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     lines = parse(filename)
 
     part_one(lines, filename == 'sample.in')
