@@ -45,13 +45,30 @@ def part_one(lines, using_sample=False):
 
 
 def part_two(lines, using_sample=False):
-    pass
+    print(f'Running Part 1:')
+    
+    ribbon_lengths = list()
+    for line in lines:
+        dimensions = [int(x) for x in line.split('x')]
+        length, width, height = dimensions
+        perimeters = [
+            2*(length + width),
+            2*(width + height),
+            2*(length + height)
+        ]
+        volume = reduce(lambda x,y : x*y, dimensions)
+        ribbon_lengths.append(min(perimeters) + volume)
+
+    if using_sample:
+        verify_sample(ribbon_lengths, [34, 14])
+    
+    print(f'  {sum(ribbon_lengths)}\n')
 
 
 if __name__ == '__main__':
     filename = 'input.in'
     lines = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    # part_one(lines, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    part_two(lines, filename == 'sample.in')
