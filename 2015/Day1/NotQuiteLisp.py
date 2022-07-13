@@ -24,13 +24,19 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
+instruction = {
+    "(": 1,
+    ")": -1
+}
+
+
 def part_one(lines, using_sample=False):
     print(f'Running Part 1:')
     
-    instruction = {
-        "(": 1,
-        ")": -1
-    }
+    # instruction = {
+    #     "(": 1,
+    #     ")": -1
+    # }
     final_floors = list()
 
     for line in lines:
@@ -48,16 +54,23 @@ def part_one(lines, using_sample=False):
 def part_two(lines, using_sample=False):
     print(f'Running Part 2:')
 
-    print(lines)
+    positions = list()
+    for line in lines:
+        curr_floor = 0
+        for pos,ch in enumerate(line, 1):
+            curr_floor += instruction[ch]
+            if curr_floor < 0:
+                positions.append(pos)
+                break
     
-    # if using_sample:
-    #     verify_sample(positions, [1, 5])
+    if using_sample:
+        verify_sample(positions, [1, 5])
     
-    print(f'  \n')
+    print(f'  {positions}\n')
 
 
 if __name__ == '__main__':
-    filename = 'sample2.in'
+    filename = 'input2.in'
     lines = parse(filename)
 
     # part_one(lines, filename == 'sample.in')
