@@ -24,16 +24,18 @@ def verify_sample(actual_vals, expected_vals):
     return True
 
 
+coord = lambda x,y : (x, y)
+direction = {
+    '^': coord(0, -1),
+    'v': coord(0, 1),
+    '>': coord(1, 0),
+    '<': coord(-1, 0)
+}
+
+
 def part_one(lines, using_sample=False):
     print(f'Running Part 1:')
     
-    coord = lambda x,y : (x, y)
-    direction = {
-        '^': coord(0, -1),
-        'v': coord(0, 1),
-        '>': coord(1, 0),
-        '<': coord(-1, 0)
-    }
     x,y = 0,0
     coordinates_list = list()
 
@@ -54,13 +56,39 @@ def part_one(lines, using_sample=False):
 
 
 def part_two(lines, using_sample=False):
-    pass
+    print(f'Running Part 2:')
+
+    coordinates_list = list()
+    for line in lines:
+        x,y = {1: 0, 2: 0}, {1: 0, 2: 0}
+        coordinates1 = {(x[1],y[1]): 1}
+        coordinates2 = dict()
+        coordinates = {1: coordinates1, 2: coordinates2}
+
+        for i,ch in enumerate(line):
+            x2,y2 = direction[ch]
+            s = i % 2 + 1
+            x[s] += x2
+            y[s] += y2
+            coordinates[s][(x[s],y[s])] = coordinates[s].get((x[s],y[s]), 0) + 1
+        
+        coordinates_list.append(coordinates)
+    
+    unique_visits = [
+        len(set([k for k in coords[1]] + [k for k in coords[2]]))
+        for coords in coordinates_list
+    ]
+
+    if using_sample:
+        verify_sample(unique_visits, [3, 3, 11])
+    
+    print(f'  {unique_visits}\n')
 
 
 if __name__ == '__main__':
     filename = 'input.in'
     lines = parse(filename)
 
-    part_one(lines, filename == 'sample.in')
+    # part_one(lines, filename == 'sample.in')
 
-    # part_two(lines, filename == 'sample.in')
+    part_two(lines, filename == 'sample.in')
