@@ -15,9 +15,9 @@ def verify_sample(actual_vals, expected_vals):
         actual_vals = [actual_vals]
         expected_vals = [expected_vals]
     
-    for a,e in zip(actual_vals, expected_vals):
+    for i,(a,e) in enumerate(zip(actual_vals, expected_vals), 1):
         if a != e:
-            print(f'FAILED: Expected {e} got {a}')
+            print(f'#{i} FAILED: Expected {e} got {a}')
             return False
     
     print('SUCCESS')
@@ -27,13 +27,30 @@ def verify_sample(actual_vals, expected_vals):
 def part_one(lines, using_sample=False):
     print(f'Running Part 1:')
     
-    print(lines)
+    coord = lambda x,y : (x, y)
+    direction = {
+        '^': coord(0, -1),
+        'v': coord(0, 1),
+        '>': coord(1, 0),
+        '<': coord(-1, 0)
+    }
+    x,y = 0,0
+    coordinates_list = list()
 
-    # TODO
-    # if using_sample:
-    #     verify_sample()
+    for i,line in enumerate(lines):
+        coordinates_list.append({(x,y): 1})
+        for ch in line:
+            x2,y2 = direction[ch]
+            x += x2
+            y += y2
+            coordinates_list[i][(x,y)] = coordinates_list[i].get((x,y), 0) + 1
     
-    print(f'  \n')
+    unique_visits = [len(d) for d in coordinates_list]
+
+    if using_sample:
+        verify_sample(unique_visits, [2, 4, 2])
+    
+    print(f'  {unique_visits}\n')
 
 
 def part_two(lines, using_sample=False):
@@ -41,7 +58,7 @@ def part_two(lines, using_sample=False):
 
 
 if __name__ == '__main__':
-    filename = 'sample.in'
+    filename = 'input.in'
     lines = parse(filename)
 
     part_one(lines, filename == 'sample.in')
