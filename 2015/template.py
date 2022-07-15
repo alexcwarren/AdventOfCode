@@ -15,7 +15,7 @@ def verify_sample(actual_vals, expected_vals):
         actual_vals = [actual_vals]
         expected_vals = [expected_vals]
     
-    for a,e in zip(actual_vals, expected_vals):
+    for i,(a,e) in enumerate(zip(actual_vals, expected_vals)):
         if a != e:
             print(f'FAILED: Expected {e} got {a}')
             return False
