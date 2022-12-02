@@ -3,7 +3,11 @@ from os import path
 
 
 def find_most_calories(file_path: str):
-    print(file_path)
+    with open(file_path, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line.isdigit():
+                print(line)
 
 
 if __name__ == "__main__":
