@@ -55,3 +55,16 @@ Find the Elf carrying the most Calories. **How many total Calories is that Elf c
 - Input calorie list for each grouping ("elf")
 - Find sum for each list of calories
 - Determine the maximum sum
+
+```python
+sum = 0
+max = 0
+
+foreach line in input_file
+    if line is empty
+        max = max(sum, max)
+        sum = 0
+    sum += cast_to_integer(line)
+
+return max
+```
