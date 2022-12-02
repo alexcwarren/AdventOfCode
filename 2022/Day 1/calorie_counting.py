@@ -3,7 +3,7 @@ from os import path
 
 
 class CalorieCounter:
-    def __init__(self, prog_name: str):
+    def __init__(self, filepath: str = None):
         prog_name: str = "calorie_counting.py"
         parser = ArgumentParser(
             prog=prog_name,
