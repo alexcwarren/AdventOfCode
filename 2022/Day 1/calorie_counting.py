@@ -4,6 +4,7 @@ from os import path
 
 class CalorieCounter:
     def __init__(self, prog_name: str):
+        prog_name: str = "calorie_counting.py"
         parser = ArgumentParser(
             prog=prog_name,
             usage=f"python {prog_name} <filepath>",
@@ -32,5 +33,5 @@ class CalorieCounter:
 
 
 if __name__ == "__main__":
-    result: int = CalorieCounter("calorie_counting.py").find_most_calories()
+    result: int = CalorieCounter().find_most_calories()
     print(result)
