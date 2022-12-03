@@ -1,21 +1,33 @@
 from argparse import ArgumentParser
 from os import path
+from sys import argv
 
 
 class CalorieCounter:
     def __init__(self, filepath: str = None):
         prog_name: str = "calorie_counting.py"
-        parser = ArgumentParser(
-            prog=prog_name,
-            usage=f"python {prog_name} <filepath>",
-        )
-        parser.add_argument("filepath")
-        args = parser.parse_args()
 
-        if not path.isfile(args.filepath):
-            print(f"ERROR: {args.filepath} does not exist")
+        # If at least one command-line argument was passed
+        if len(argv) > 1:
+            parser = ArgumentParser(
+                prog=prog_name,
+                usage=f"python {prog_name} -f <filepath>",
+            )
+            parser.add_argument("-f", "--filepath")
+            args = parser.parse_args()
+            filepath: str = args.filepath
+
+        if filepath is None:
+            print("ERROR: filepath not provided.")
+            exit()
+        elif not path.isfile(filepath):
+            print(f'ERROR: "{filepath}" does not exist.')
+            exit()
         else:
-            self.__filepath: str = args.filepath
+            self.__filepath: str = filepath
+
+    def print_result(self):
+        print(f"Elf carrying the most calories is carrying {self.find_most_calories()}")
 
     def find_most_calories(self) -> int:
         calories_sum: int = 0
@@ -33,5 +45,4 @@ class CalorieCounter:
 
 
 if __name__ == "__main__":
-    result: int = CalorieCounter().find_most_calories()
-    print(result)
+    day1 = CalorieCounter().print_result()
