@@ -26,17 +26,20 @@ from argparse import ArgumentParser
 import requests
 from bs4 import BeautifulSoup
 import re
+from os import getcwd, mkdir, path
 
 
 class DayCreator:
-    TEMPLATE_PATH: str = "./templates/"
+    TEMPLATE_PATH: str = "./templates"
 
-    def __init__(self):
+    def __init__(self, current_directory: str):
+        self.current_dir: str = current_directory
         self.process_arguments()
 
     def create_new_day(self):
         self.get_url_data()
-        self.create_directory()
+        self.check_year_directory()
+        self.create_day_directory()
         self.create_files()
 
     def process_arguments(self):
@@ -53,7 +56,13 @@ class DayCreator:
     def get_url_data(self):
         response = requests.get(self.url)
         self.html_content = BeautifulSoup(response.content, "html.parser")
+        self.year: str = self.get_year()
         self.day_number, self.problem_title = self.get_problem_header()
+
+    def get_year(self):
+        header = self.html_content.find("h1", attrs={"class": "title-event"})
+        year = re.search(r".*(\d{4}).*", header.text)
+        return year.group(1)
 
     def get_problem_header(self) -> tuple[str]:
         problem_header: str =  self.html_content.find("h2").text.strip()
@@ -65,8 +74,20 @@ class DayCreator:
     def convert_to_filename(self, text: str) -> str:
         return text.lower().replace(" ", "_")
 
-    def create_directory(self):
-        pass
+    def check_year_directory(self):
+        self.year_dir: str = f"{self.current_dir}/{self.year}"
+        if not path.isdir(self.current_dir):
+            mkdir(self.year_dir)
+
+    def create_day_directory(self):
+        dir_name: str = f"Day {self.day_number}"
+        try:
+            mkdir(f"{self.year_dir}/{dir_name}")
+        except:
+            print(
+                f"ERROR: directory \"{self.year_dir}/{dir_name}\" already exists."
+            )
+            exit()
 
     def create_files(self):
         self.create_python_file()
@@ -92,5 +113,5 @@ class DayCreator:
 
 
 if __name__ == "__main__":
-    script = DayCreator()
+    script = DayCreator(getcwd())
     script.create_new_day()
