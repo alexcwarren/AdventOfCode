@@ -147,20 +147,26 @@ class DayCreator:
         #     f"{self.templates_dir}/template.py",
         #     python_file
         # )
+
+        file_contents: str = self.get_file_contents(python_file)
         
+
     
     def create_markdown_file(self):
         outline_file: str = f"{self.day_dir}/Outline.md"
         copy(f"{self.templates_dir}/Outline.md", outline_file)
 
-        file_contents = None
-        with open(outline_file, "r") as read_file:
-            file_contents = read_file.read()
-
+        file_contents: str = self.get_file_contents(outline_file)
         file_contents = file_contents.replace("REPLACE_WITH_TITLE", self.problem_title).replace("REPLACE_WITH_URL", self.url).replace("REPLACE_WITH_DESCRIPTION", self.problem_description)
 
         with open(outline_file, "w") as write_file:
             write_file.write(file_contents)
+
+    def get_file_contents(self, filepath: str):
+        file_contents = None
+        with open(filepath, "r") as read_file:
+            file_contents = read_file.read()
+        return file_contents
     
     def create_sample_data_file(self):
         self.create_empty_file("sample.in")
