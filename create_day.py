@@ -32,6 +32,11 @@ from markdownify import markdownify
 
 
 class DayCreator:
+    class REPLACEMENTS:
+        PROBLEM_NAME: str = "REPLACE_WITH_PROBLEM_NAME"
+        CLASS_NAME: str = "REPLACE_WITH_CLASS_NAME"
+        DAY_NUMBER: str = "REPLACE_WITH_DAY_NUMBER"
+
     def __init__(self, current_directory: str):
         self.current_dir: str = current_directory
         self.templates_dir: str = f"{self.current_dir}/templates"
@@ -150,7 +155,7 @@ class DayCreator:
         )
 
         file_contents: str = self.get_file_contents(python_file)
-        file_contents = file_contents.replace("REPLACE_WITH_CLASS_NAME", self.class_name).replace("REPLACE_WITH_PROBLEM_NAME", self.problem_name).replace("REPLACE_WITH_DAY_NUMBER", self.day_number)
+        file_contents = file_contents.replace(self.REPLACEMENTS.CLASS_NAME, self.class_name).replace(self.REPLACEMENTS.PROBLEM_NAME, self.problem_name).replace(self.REPLACEMENTS.DAY_NUMBER, self.day_number)
 
         self.write_file_contents(file_contents, python_file)
     
@@ -183,15 +188,14 @@ class DayCreator:
         self.create_empty_file("input.in")
     
     def create_python_test_file(self):
-        # test_file: str = f"{self.day_dir}/test_{self.problem_name}.py"
-        test_file: str = f"{self.current_dir}/test_{self.problem_name}.py"
+        test_file: str = f"{self.day_dir}/test_{self.problem_name}.py"
         copy(
             f"{self.templates_dir}/test.py",
             test_file
         )
 
         file_contents: str = self.get_file_contents(test_file)
-        file_contents = file_contents.replace("REPLACE_WITH_PROBLEM_NAME", self.problem_name).replace("REPLACE_WITH_CLASS_NAME", self.class_name)
+        file_contents = file_contents.replace(self.REPLACEMENTS.PROBLEM_NAME, self.problem_name).replace(self.REPLACEMENTS.CLASS_NAME, self.class_name)
 
         self.write_file_contents(file_contents, test_file)
 
