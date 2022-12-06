@@ -5,7 +5,7 @@ import calorie_counting
 
 @pytest.fixture
 def script():
-    return calorie_counting.CalorieCounter()
+    return calorie_counting.CalorieCounter("sample.in")
 
 
 def test_sample_input(script):
