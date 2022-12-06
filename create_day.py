@@ -183,10 +183,17 @@ class DayCreator:
         self.create_empty_file("input.in")
     
     def create_python_test_file(self):
+        # test_file: str = f"{self.day_dir}/test_{self.problem_name}.py"
+        test_file: str = f"{self.current_dir}/test_{self.problem_name}.py"
         copy(
             f"{self.templates_dir}/test.py",
-            f"{self.day_dir}/test_{self.problem_title}.py"
+            test_file
         )
+
+        file_contents: str = self.get_file_contents(test_file)
+        file_contents = file_contents.replace("REPLACE_WITH_PROBLEM_NAME", self.problem_name).replace("REPLACE_WITH_CLASS_NAME", self.class_name)
+
+        self.write_file_contents(file_contents, test_file)
 
 
 if __name__ == "__main__":
