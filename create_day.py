@@ -177,8 +177,7 @@ class DayCreator:
         self.create_empty_file("sample.in")
 
     def create_empty_file(self, filename: str):
-        with open(f"{self.day_dir}/{filename}", "w") as file:
-            file.write("")
+        self.write_file_contents("", f"{self.day_dir}/{filename}")
     
     def create_input_data_file(self):
         self.create_empty_file("input.in")
