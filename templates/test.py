@@ -1,5 +1,4 @@
 import pytest
-
 import REPLACE_WITH_PROBLEM_NAME
 
 
@@ -10,6 +9,7 @@ def script():
 
 def test_sample_input(script):
     pass
+
 
 def test_actual_input(script):
     pass
