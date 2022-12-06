@@ -59,6 +59,7 @@ class DayCreator:
         self.html_content = BeautifulSoup(response.content, "html.parser")
         self.year: str = self.get_year()
         self.day_number, self.problem_name = self.get_problem_header()
+        self.class_name: str = self.problem_name.replace("_", " ").title().replace(" ", "")
         self.problem_title, self.problem_description = self.get_problem_description()
 
     def get_year(self) -> str:
@@ -134,23 +135,24 @@ class DayCreator:
             exit()
 
     def create_files(self):
-        self.create_python_file()
+        # self.create_python_file()
         # self.create_markdown_file()
         # self.create_sample_data_file()
         # self.create_input_data_file()
-        # self.create_python_test_file()
+        self.create_python_test_file()
 
     def create_python_file(self):
         # python_file: str = f"{self.day_dir}/{self.problem_name}.py"
-        python_file: str = f"{self.current_dir}/{self.problem_name}.py"
-        # copy(
-        #     f"{self.templates_dir}/template.py",
-        #     python_file
-        # )
+        python_file: str = f"{self.current_dir}/test.py"
+        copy(
+            f"{self.templates_dir}/template.py",
+            python_file
+        )
 
         file_contents: str = self.get_file_contents(python_file)
-        
+        file_contents = file_contents.replace("REPLACE_WITH_CLASS_NAME", self.class_name).replace("REPLACE_WITH_PROBLEM_NAME", self.problem_name).replace("REPLACE_WITH_DAY_NUMBER", self.day_number)
 
+        self.write_file_contents(file_contents, python_file)
     
     def create_markdown_file(self):
         outline_file: str = f"{self.day_dir}/Outline.md"
@@ -159,14 +161,17 @@ class DayCreator:
         file_contents: str = self.get_file_contents(outline_file)
         file_contents = file_contents.replace("REPLACE_WITH_TITLE", self.problem_title).replace("REPLACE_WITH_URL", self.url).replace("REPLACE_WITH_DESCRIPTION", self.problem_description)
 
-        with open(outline_file, "w") as write_file:
-            write_file.write(file_contents)
+        self.write_file_contents(file_contents, outline_file)
 
     def get_file_contents(self, filepath: str):
         file_contents = None
         with open(filepath, "r") as read_file:
             file_contents = read_file.read()
         return file_contents
+
+    def write_file_contents(self, file_contents: str, filepath: str):
+        with open(filepath, "w") as write_file:
+            write_file.write(file_contents)
     
     def create_sample_data_file(self):
         self.create_empty_file("sample.in")
