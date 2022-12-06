@@ -4,10 +4,16 @@
 
 ## Table of Contents
 
-1. [Problem Description](#problem-description)
-1. [Solution Outline](#solution-outline)
+1. [Part 1](#part-1)
+   - [Problem Description](#problem-description-1)
+   - [Solution Outline](#solution-outline-1)
+1. [Part 2](#part-2)
+   - [Problem Description](#problem-description-2)
+   - [Solution Outline](#solution-outline-2)
 
-## Problem Description {#problem-description}
+## Part 1 {#part-1}
+
+### Problem Description - Part 1 {#problem-description-1}
 
 Santa's reindeer typically eat regular reindeer food, but they need a lot of [magical energy](https://adventofcode.com/2018/day/25) to deliver presents on Christmas. For that, their favorite snack is a special type of **star** fruit that only grows deep in the jungle. The Elves have brought you on their annual expedition to the grove where the fruit grows.
 
@@ -50,7 +56,7 @@ In case the Elves get hungry and need extra snacks, they need to know which Elf 
 
 Find the Elf carrying the most Calories. **How many total Calories is that Elf carrying?**
 
-## Solution Outline {#solution-outline}
+## Solution Outline - Part 1 {#solution-outline-1}
 
 - Input calorie list for each grouping ("elf")
 - Find sum for each list of calories
@@ -68,3 +74,9 @@ foreach line in input_file
 
 return max
 ```
+
+## Part 2 {#part-2}
+
+### Problem Description - Part 2 {#problem-description-2}
+
+### Solution Outline - Part 2 {#solution-outline-2}
