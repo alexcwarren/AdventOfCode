@@ -3,6 +3,27 @@ from os import path
 
 
 class RockPaperScissors:
+    class CHOICES:
+        ROCK: int = 1
+        PAPER: int = 2
+        SCISSORS: int = 3
+
+    choices_map: dict[str, int] = dict()
+    A: str = "A"
+    B: str = "B"
+    C: str = "C"
+    X: str = "X"
+    Y: str = "Y"
+    Z: str = "Z"
+    choices_map[A] = choices_map[X] = CHOICES.ROCK
+    choices_map[B] = choices_map[Y] = CHOICES.PAPER
+    choices_map[C] = choices_map[Z] = CHOICES.SCISSORS
+
+    class OUTCOMES:
+        LOSE: int = 0
+        DRAW: int = 3
+        WIN: int = 6
+
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "rock_paper_scissors.py"
         self.is_part1: bool = is_part1
@@ -30,12 +51,30 @@ class RockPaperScissors:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.determine_total_score()}")
+            print(f"Your total score is {self.determine_total_score()}")
         else:
             print(f"{self.solve_part2()}")
 
     def determine_total_score(self):
-        pass
+        total_score: int = 0
+        with open(self.__filepath, "r") as readfile:
+            for line in readfile:
+                opponent, you = (item.upper() for item in line.split())
+                opponent_choice = self.choices_map[opponent]
+                your_choice = self.choices_map[you]
+                total_score += your_choice + self.get_outcome(
+                    your_choice, opponent_choice
+                )
+        return total_score
+
+    def get_outcome(self, you: int, opponent: int) -> int:
+        if you == opponent:
+            return self.OUTCOMES.DRAW
+        if you == self.CHOICES.ROCK and opponent == self.CHOICES.SCISSORS:
+            return self.OUTCOMES.WIN
+        if you > opponent:
+            return self.OUTCOMES.WIN
+        return self.OUTCOMES.LOSE
 
     def solve_part2(self):
         pass
