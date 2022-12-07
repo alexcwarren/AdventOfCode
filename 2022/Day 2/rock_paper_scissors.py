@@ -59,12 +59,13 @@ class RockPaperScissors:
         total_score: int = 0
         with open(self.__filepath, "r") as readfile:
             for line in readfile:
-                opponent, you = (item.upper() for item in line.split())
+                opponent, you = (item.upper() for item in line.strip().split())
                 opponent_choice = self.choices_map[opponent]
                 your_choice = self.choices_map[you]
-                total_score += your_choice + self.get_outcome(
+                round_score = your_choice + self.get_outcome(
                     your_choice, opponent_choice
                 )
+                total_score += round_score
         return total_score
 
     def get_outcome(self, you: int, opponent: int) -> int:
@@ -72,6 +73,8 @@ class RockPaperScissors:
             return self.OUTCOMES.DRAW
         if you == self.CHOICES.ROCK and opponent == self.CHOICES.SCISSORS:
             return self.OUTCOMES.WIN
+        if you == self.CHOICES.SCISSORS and opponent == self.CHOICES.ROCK:
+            return self.OUTCOMES.LOSE
         if you > opponent:
             return self.OUTCOMES.WIN
         return self.OUTCOMES.LOSE
