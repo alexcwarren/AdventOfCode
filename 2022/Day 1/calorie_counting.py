@@ -63,6 +63,9 @@ class CalorieCounter:
                         max_sums.remove(min(max_sums))
                         max_sums.append(calories_sum)
                     calories_sum = 0
+        if any(calories_sum > max_sum for max_sum in max_sums):
+            max_sums.remove(min(max_sums))
+            max_sums.append(calories_sum)
 
         return sum(max_sums)
 
