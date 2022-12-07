@@ -88,3 +88,22 @@ In the example above, the top three Elves are the fourth Elf (with `24000` Calor
 Find the top three Elves carrying the most Calories. **How many Calories are those Elves carrying in total?**
 
 ### Solution Outline - Part 2 {#solution-outline-2}
+
+- Input calorie list for each grouping ("elf")
+- Find sum for each list of calories
+- Keep track of top 3 maximum sums
+
+```python
+calorie_sum = 0
+maxsums = [0, 0, 0]
+
+foreach line in input_file
+    if line is empty
+        if all(calorie_sum > max_sum for max_sums):
+            maxsums.remove(min(maxsums))
+            maxsums.append(calorie_sum)
+        calorie_sum = 0
+    calorie_sum += int(line)
+
+return sum(maxsums)
+```
