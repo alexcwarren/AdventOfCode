@@ -99,7 +99,7 @@ maxsums = [0, 0, 0]
 
 foreach line in input_file
     if line is empty
-        if all(calorie_sum > max_sum for max_sums):
+        if any(calorie_sum > max_sum for max_sums):
             maxsums.remove(min(maxsums))
             maxsums.append(calorie_sum)
         calorie_sum = 0
