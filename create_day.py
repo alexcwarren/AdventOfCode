@@ -30,12 +30,21 @@ class DayCreator:
         self.create_files()
 
     def process_arguments(self):
+        BASE_URL: str = "https://adventofcode.com"
         parser = ArgumentParser(
-            prog="create_day.py", usage="python create_day.py <AdventOfCode.com URL>"
+            prog="create_day.py", usage="python create_day.py [-y <year> -d <day>] [--url <AdventOfCode.com URL>]"
         )
-        parser.add_argument("url")
+        parser.add_argument("-y", "--year", choices=[str(yr) for yr in range(2015, 2023)])
+        parser.add_argument("-d", "--day", choices=[str(dy) for dy in range(1, 26)])
+        parser.add_argument("-u", "--url", default=BASE_URL)
         args = parser.parse_args()
-        self.url: str = str(args.url).lower()
+
+        if args.url == BASE_URL:
+            if not (args.year or args.day):
+                parser.error(f"No arguments provided. Provide \"year\" and \"day\" or \"url\".")
+            self.url:str = f"{BASE_URL}/{args.year}/day/{args.day}"
+        else:
+            self.url: str = str(args.url).lower()
         if "adventofcode.com" not in self.url:
             parser.error(f'{self.url}: Please provide "adventofcode.com" URL.')
 
