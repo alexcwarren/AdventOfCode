@@ -14,6 +14,9 @@ class DayCreator:
         PROBLEM_NAME: str = "REPLACE_WITH_PROBLEM_NAME"
         CLASS_NAME: str = "REPLACE_WITH_CLASS_NAME"
         DAY_NUMBER: str = "REPLACE_WITH_DAY_NUMBER"
+        TITLE: str = "REPLACE_WITH_TITLE"
+        URL: str = "REPLACE_WITH_URL"
+        DESCRIPTION: str = "REPLACE_WITH_DESCRIPTION"
 
     def __init__(self, current_directory: str):
         self.current_dir: str = current_directory
@@ -108,9 +111,9 @@ class DayCreator:
 
         file_contents: str = self.get_file_contents(outline_file)
         file_contents = (
-            file_contents.replace("REPLACE_WITH_TITLE", self.problem_title)
-            .replace("REPLACE_WITH_URL", self.url)
-            .replace("REPLACE_WITH_DESCRIPTION", self.problem_description)
+            file_contents.replace(self.REPLACEMENTS.TITLE, self.problem_title)
+            .replace(self.REPLACEMENTS.URL, self.url)
+            .replace(self.REPLACEMENTS.DESCRIPTION, self.problem_description)
         )
 
         self.write_file_contents(file_contents, outline_file)
