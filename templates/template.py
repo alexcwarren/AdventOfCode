@@ -3,34 +3,41 @@ from os import path
 
 
 class REPLACE_WITH_CLASS_NAME:
-    def __init__(self, filepath: str = None):
+    def __init__(self, is_part1: bool, filepath: str = None):
         prog_name: str = "REPLACE_WITH_PROBLEM_NAME.py"
+        self.is_part1: bool = is_part1
 
         # Look for command-line args if no filepath provided
         if filepath is None:
             parser = ArgumentParser(
                 prog=prog_name,
-                usage=f"python {prog_name} -f <filepath>",
+                usage=f"python {prog_name} -f <filepath> -p <partnumber>",
             )
             parser.add_argument("-f", "--filepath")
+            parser.add_argument("-p", "--partnumber", choices=["1", "2"], default="1")
             args = parser.parse_args()
-            filepath: str = args.filepath
+            filepath = args.filepath
+            self.is_part1 = args.partnumber == "1"
 
         if filepath is None:
-            print("ERROR: filepath not provided.")
-            exit()
+            parser.error("filepath not provided.")
         elif not path.isfile(filepath):
-            print(f'ERROR: "{filepath}" does not exist.')
-            exit()
+            parser.error('"{filepath}" does not exist.')
         else:
             self.__filepath: str = filepath
 
     def print_result(self):
-        print(f"{self.solve_problem()}")
+        if self.is_part1:
+            print(f"{self.solve_part1()}")
+        else:
+            print(f"{self.solve_part2()}")
 
-    def solve_problem(self):
+    def solve_part1(self):
+        pass
+
+    def solve_part2(self):
         pass
 
 
 if __name__ == "__main__":
-    dayREPLACE_WITH_DAY_NUMBER = REPLACE_WITH_CLASS_NAME().print_result()
+    REPLACE_WITH_CLASS_NAME().print_result()
