@@ -1,13 +1,19 @@
-# --- Day 2: Rock Paper Scissors ---
+# Day 2: Rock Paper Scissors
 
 <https://adventofcode.com/2022/day/2>
 
 ## Table of Contents
 
-1. [Problem Description](#problem-description)
-1. [Solution Outline](#solution-outline)
+1. [Part 1](#part-1)
+   - [Problem Description](#problem-description-1)
+   - [Solution Outline](#solution-outline-1)
+1. [Part 2](#part-2)
+   - [Problem Description](#problem-description-2)
+   - [Solution Outline](#solution-outline-2)
 
-## Problem Description {#problem-description}
+## Part 1 {#part-1}
+
+### Problem Description - Part 1 {#problem-description-1}
 
 The Elves begin to set up camp on the beach. To decide whose tent gets to be closest to the snack storage, a giant [Rock Paper Scissors](https://adventofcode.com/2022/day/2https://en.wikipedia.org/wiki/Rock_paper_scissors) tournament is already in progress.
 
@@ -39,4 +45,10 @@ In this example, if you were to follow the strategy guide, you would get a total
 
 **What would your total score be if everything goes exactly according to your strategy guide?**
 
-## Solution Outline {#solution-outline}
+### Solution Outline - Part 1 {#solution-outline-1}
+
+## Part 2 {#part-2}
+
+### Problem Description - Part 2 {#problem-description-2}
+
+### Solution Outline - Part 2 {#solution-outline-2}
