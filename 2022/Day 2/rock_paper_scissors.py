@@ -85,7 +85,7 @@ class RockPaperScissors:
             return self.OUTCOMES.WIN
         return self.OUTCOMES.LOSE
 
-    def get_total_score_2(self):
+    def determine_total_score_2(self):
         pass
 
     def derive_choice(self, opponent: int, outcome: int) -> int:
