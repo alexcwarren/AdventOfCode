@@ -3,7 +3,7 @@ from os import path
 
 
 class CalorieCounter:
-    def __init__(self, is_part1: bool = True, filepath: str = None):
+    def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "calorie_counting.py"
         self.is_part1: bool = is_part1
 
@@ -20,9 +20,11 @@ class CalorieCounter:
             self.is_part1 = args.partnumber == "1"
 
         if filepath is None:
-            parser.error("filepath not provided.")
+            print("ERROR: filepath not provided.")
+            exit()
         elif not path.isfile(filepath):
-            parser.error('"{filepath}" does not exist.')
+            print('ERROR: "{filepath}" does not exist.')
+            exit()
         else:
             self.__filepath: str = filepath
 
@@ -49,7 +51,20 @@ class CalorieCounter:
         return max_sum
 
     def find_top3_most_calories(self) -> int:
-        return 45000
+        calories_sum: int = 0
+        max_sums: list[int] = [0, 0, 0]
+
+        with open(self.__filepath, "r") as file:
+            for line in file:
+                if line.strip().isdigit():
+                    calories_sum += int(line)
+                else:
+                    if any(calories_sum > max_sum for max_sum in max_sums):
+                        max_sums.remove(min(max_sums))
+                        max_sums.append(calories_sum)
+                    calories_sum = 0
+
+        return sum(max_sums)
 
 
 if __name__ == "__main__":
