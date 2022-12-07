@@ -11,37 +11,10 @@ class MarkdownConverter:
         self.output_file: str = f"{getcwd()}/markdown.md"
 
     def get_markdown(self, html) -> str:
-        markdown: str = ""
-        for element in html:
-            element_str = str(element)
-            if match(r"\s+", element_str):
-                continue
-
-            if "h2" in element_str:
-                element_str = sub(r"<(/?)h2.*?>", r"<\g<1>h1>", element_str)
-                element_str = element_str.replace("<>", "").replace("</>", "")
-
-            elif "href" in element_str:
-                element_str = sub(
-                    r"href=\"(.+)\"", f'href="{self.url}\\g<1>"', element_str
-                )
-
-            element_markdown = markdownify(
-                element_str, heading_style="ATX", bullets="-", code_language="python"
-            ).strip()
-
-            em_code_elements: list = findall(r"`\*\d+\*`", element_markdown)
-            if em_code_elements:
-                for element in em_code_elements:
-                    digits_search: str = search(r"\d+", element)
-                    element_markdown = element_markdown.replace(
-                        element, f"*`{digits_search.group()}`*"
-                    )
-            markdown += f"{element_markdown}\n\n".replace("*", "**").replace(
-                "\n```\n", "```\n"
-            )
-
-        return markdown.strip()
+        return (
+            "".join(self.get_markdown_element(element) for element in html).strip()
+            + "\n"
+        )
 
     def get_markdown_element(self, element) -> str:
         element_str = str(element)
