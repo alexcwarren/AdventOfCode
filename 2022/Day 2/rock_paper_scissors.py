@@ -30,11 +30,11 @@ class RockPaperScissors:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.solve_part1()}")
+            print(f"{self.determine_total_score()}")
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def determine_total_score(self):
         pass
 
     def solve_part2(self):
