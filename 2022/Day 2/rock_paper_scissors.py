@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from collections import deque
 from os import path
 
 
@@ -59,7 +60,7 @@ class RockPaperScissors:
         if self.is_part1:
             print(f"Your total score is {self.determine_total_score_1()}")
         else:
-            print(f"{self.get_total_score_2()}")
+            print(f"Your total score is {self.determine_total_score_2()}")
 
     def determine_total_score_1(self):
         total_score: int = 0
@@ -86,10 +87,29 @@ class RockPaperScissors:
         return self.OUTCOMES.LOSE
 
     def determine_total_score_2(self):
-        pass
+        total_score: int = 0
+        with open(self.__filepath, "r") as readfile:
+            for line in readfile:
+                opponent_input, outcome_input = (
+                    item.upper() for item in line.strip().split()
+                )
+                opponent = self.choices_map[opponent_input]
+                outcome = self.outcomes_map[outcome_input]
+                round_score = self.derive_choice(opponent, outcome) + outcome
+                total_score += round_score
+        return total_score
 
     def derive_choice(self, opponent: int, outcome: int) -> int:
-        pass
+        your_choices: deque[int] = deque(
+            [self.CHOICES.ROCK, self.CHOICES.PAPER, self.CHOICES.SCISSORS]
+        )
+        rotations: dict[int, int] = {
+            self.OUTCOMES.LOSE: 1,
+            self.OUTCOMES.DRAW: 0,
+            self.OUTCOMES.WIN: -1,
+        }
+        your_choices.rotate(0 - (opponent - 1) + rotations[outcome])
+        return your_choices[0]
 
 
 if __name__ == "__main__":
