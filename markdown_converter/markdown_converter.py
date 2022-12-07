@@ -43,9 +43,7 @@ class MarkdownConverter:
         with open(self.intput_file, "r") as read_file:
             html = read_file.read()
         with open(self.output_file, "w") as write_file:
-            write_file.write(
-                self.get_markdown(BeautifulSoup(html, "html.parser")) + "\n"
-            )
+            write_file.write(self.get_markdown(BeautifulSoup(html, "html.parser")))
 
 
 if __name__ == "__main__":
