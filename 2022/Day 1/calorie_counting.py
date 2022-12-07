@@ -34,7 +34,7 @@ class CalorieCounter:
                 f"Elf carrying the most calories is carrying {self.find_most_calories()}"
             )
         else:
-            print(f"{self.find_top3_most_calories()}")
+            print(f"Top 3 elves are carrying calories totalling {self.find_top3_most_calories()}")
 
     def find_most_calories(self) -> int:
         calories_sum: int = 0
@@ -51,23 +51,27 @@ class CalorieCounter:
         return max_sum
 
     def find_top3_most_calories(self) -> int:
-        calories_sum: int = 0
-        max_sums: list[int] = [0, 0, 0]
-
+        lines: list = []
         with open(self.__filepath, "r") as file:
-            for line in file:
-                if line.strip().isdigit():
-                    calories_sum += int(line)
-                else:
-                    if any(calories_sum > max_sum for max_sum in max_sums):
-                        max_sums.remove(min(max_sums))
-                        max_sums.append(calories_sum)
-                    calories_sum = 0
-        if any(calories_sum > max_sum for max_sum in max_sums):
-            max_sums.remove(min(max_sums))
-            max_sums.append(calories_sum)
+            lines: list = [line.strip() for line in file]
 
-        return sum(max_sums)
+        calories_sum: int = 0
+        max_calories_sums: list[int] = [0] * 3
+        for i,line in enumerate(lines):
+            is_last_line: bool = i == len(lines) - 1
+
+            if is_last_line and line.isdigit():
+                calories_sum += int(line)
+
+            if not line.isdigit() or is_last_line:
+                if any(calories_sum > max_calories_sum for max_calories_sum in max_calories_sums):
+                    max_calories_sums.remove(min(max_calories_sums))
+                    max_calories_sums.append(calories_sum)
+                calories_sum = 0
+            else:
+                calories_sum += int(line)
+
+        return sum(max_calories_sums)
 
 
 if __name__ == "__main__":
