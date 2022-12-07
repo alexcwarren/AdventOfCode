@@ -47,6 +47,44 @@ In this example, if you were to follow the strategy guide, you would get a total
 
 ### Solution Outline - Part 1 {#solution-outline-1}
 
+```python
+class CHOICES:
+    ROCK = 1
+    PAPER = 2
+    SCISSORS = 3
+
+choices_map = {
+   "A": CHOICES.ROCK,
+   "B": CHOICES.PAPER,
+   "C": CHOICES.SCISSORS,
+   "X": CHOICES.ROCK,
+   "Y": CHOICES.PAPER,
+   "Z": CHOICES.SCISSORS
+}
+
+class OUTCOMES:
+    LOSE = 0
+    DRAW = 3
+    WIN = 6
+
+def get_outcome(opponent, you):
+    if you == opponent:
+        return OUTCOMES.DRAW
+    if you == CHOICES.ROCK and opponent == CHOICES.SCISSORS:
+        return OUTCOMES.WIN
+    if you > opponent:
+        return OUTCOMES.WIN
+    return OUTCOMES.LOSE
+
+total_score = 0
+foreach line
+    opponent, you = line.split()
+    opponent_choice = choices_map[opponent]
+    your_choice = choices_map[opponent]
+
+    total_score += your_choice + get_outcome(opponent_choice, your_choice)
+```
+
 ## Part 2 {#part-2}
 
 ### Problem Description - Part 2 {#problem-description-2}
