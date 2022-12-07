@@ -9,8 +9,8 @@ def script():
 
 
 def test_sample_input(script):
-    assert script.determine_total_score() == 15
+    assert script.determine_total_score_1() == 15
 
 
 def test_actual_input(script):
-    pass
+    assert script.determine_total_score_2() == 12

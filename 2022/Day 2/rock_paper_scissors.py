@@ -8,13 +8,14 @@ class RockPaperScissors:
         PAPER: int = 2
         SCISSORS: int = 3
 
-    choices_map: dict[str, int] = dict()
     A: str = "A"
     B: str = "B"
     C: str = "C"
     X: str = "X"
     Y: str = "Y"
     Z: str = "Z"
+
+    choices_map: dict[str, int] = dict()
     choices_map[A] = choices_map[X] = CHOICES.ROCK
     choices_map[B] = choices_map[Y] = CHOICES.PAPER
     choices_map[C] = choices_map[Z] = CHOICES.SCISSORS
@@ -23,6 +24,11 @@ class RockPaperScissors:
         LOSE: int = 0
         DRAW: int = 3
         WIN: int = 6
+
+    outcomes_map: dict[str, int] = dict()
+    outcomes_map[X] = OUTCOMES.LOSE
+    outcomes_map[Y] = OUTCOMES.DRAW
+    outcomes_map[Z] = OUTCOMES.WIN
 
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "rock_paper_scissors.py"
@@ -51,11 +57,11 @@ class RockPaperScissors:
 
     def print_result(self):
         if self.is_part1:
-            print(f"Your total score is {self.determine_total_score()}")
+            print(f"Your total score is {self.determine_total_score_1()}")
         else:
-            print(f"{self.solve_part2()}")
+            print(f"{self.get_total_score_2()}")
 
-    def determine_total_score(self):
+    def determine_total_score_1(self):
         total_score: int = 0
         with open(self.__filepath, "r") as readfile:
             for line in readfile:
@@ -79,7 +85,10 @@ class RockPaperScissors:
             return self.OUTCOMES.WIN
         return self.OUTCOMES.LOSE
 
-    def solve_part2(self):
+    def get_total_score_2(self):
+        pass
+
+    def derive_choice(self, opponent: int, outcome: int) -> int:
         pass
 
 
