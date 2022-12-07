@@ -3,7 +3,7 @@ from os import path
 
 
 class REPLACE_WITH_CLASS_NAME:
-    def __init__(self, is_part1: bool, filepath: str = None):
+    def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "REPLACE_WITH_PROBLEM_NAME.py"
         self.is_part1: bool = is_part1
 
@@ -20,9 +20,11 @@ class REPLACE_WITH_CLASS_NAME:
             self.is_part1 = args.partnumber == "1"
 
         if filepath is None:
-            parser.error("filepath not provided.")
+            print("ERROR: filepath not provided.")
+            exit()
         elif not path.isfile(filepath):
-            parser.error('"{filepath}" does not exist.')
+            print('ERROR: "{filepath}" does not exist.')
+            exit()
         else:
             self.__filepath: str = filepath
 
