@@ -7,8 +7,8 @@ class REPLACE_WITH_CLASS_NAME:
     def __init__(self, filepath: str = None):
         prog_name: str = "REPLACE_WITH_PROBLEM_NAME.py"
 
-        # If at least one command-line argument was passed
-        if len(argv) > 1:
+        # Look for command-line args if no filepath provided
+        if filepath is None:
             parser = ArgumentParser(
                 prog=prog_name,
                 usage=f"python {prog_name} -f <filepath>",
