@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
 from os import path
-from sys import argv
 
 
 class REPLACE_WITH_CLASS_NAME:
