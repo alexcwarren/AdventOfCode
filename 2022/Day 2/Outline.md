@@ -102,3 +102,23 @@ Now that you're correctly decrypting the ultra top secret strategy guide, you wo
 Following the Elf's instructions for the second column, **what would your total score be if everything goes exactly according to your strategy guide?**
 
 ### Solution Outline - Part 2 {#solution-outline-2}
+
+```python
+total_score = 0
+foreach line in inputfile:
+    opponent_input, outcome_input = line.strip().split()
+    opponent = choices_map[opponent_input]
+    outcome = outcomes_map[outcome_input]
+    you = derive_choice(opponent, outcome)
+
+def derive_choice(opponent, outcome):
+    your_choices = deque([ROCK, PAPER, SCISSORS])
+    rotations = {
+        LOSE: 1,
+        DRAW: 0,
+        WIN: -1
+    }
+    your_choices.rotate(0 - (opponent - 1) + rotations[outcome])
+
+    return your_choices[0]
+```
