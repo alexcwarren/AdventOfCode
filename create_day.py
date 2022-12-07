@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 from markdownify import markdownify
 from requests import get as get_response
 
+from markdown_converter.markdown_converter import MarkdownConverter
+
 
 class DayCreator:
     class REPLACEMENTS:
@@ -39,11 +41,15 @@ class DayCreator:
         response = get_response(self.url)
         self.html_content = BeautifulSoup(response.content, "html.parser")
         self.year: str = self.get_year()
-        self.day_number, self.problem_name = self.get_problem_header()
+        (
+            self.problem_title,
+            self.day_number,
+            self.problem_name,
+        ) = self.get_problem_header()
         self.class_name: str = (
             self.problem_name.replace("_", " ").title().replace(" ", "")
         )
-        self.problem_title, self.problem_description = self.get_problem_description()
+        self.problem_description: str = self.get_problem_description()
 
     def get_year(self) -> str:
         header = self.html_content.find("h1", attrs={"class": "title-event"})
@@ -55,49 +61,49 @@ class DayCreator:
         day_match = search(r"\d", problem_header)
         title_match = search(r": (.+) -", problem_header)
         title: str = self.convert_to_filename(title_match.group(1))
-        return (day_match.group(), title)
+        return (sub(r" ?--- ?", "", problem_header), day_match.group(), title)
 
     def get_problem_description(self) -> tuple:
         article_html = self.html_content.find("article")
-        title: str = ""
-        description: str = ""
-        for element in article_html:
-            element_str: str = str(element)
-            is_title: bool = False
-            if match(r"\s+", element_str):
-                continue
+        # title: str = ""
+        return MarkdownConverter(self.url).get_markdown(article_html)
+        # for element in article_html:
+        #     is_title: bool = False
+        # element_str: str = str(element)
+        # if match(r"\s+", element_str):
+        #     continue
 
-            if "h2" in element_str:
-                is_title = True
-                element_str = element_str.replace("h2", "")
-                element_str = element_str.replace("<>", "").replace("</>", "")
+        # if "h2" in element_str:
+        #     is_title = True
+        #     element_str = element_str.replace("h2", "")
+        #     element_str = element_str.replace("<>", "").replace("</>", "")
 
-            elif "href" in element_str:
-                element_str = sub(
-                    r"href=\"(.+)\"", f'href="{self.url}\\g<1>"', element_str
-                )
+        # elif "href" in element_str:
+        #     element_str = sub(
+        #         r"href=\"(.+)\"", f'href="{self.url}\\g<1>"', element_str
+        #     )
 
-            element_markdown = markdownify(
-                element_str, heading_style="ATX", bullets="-", code_language="python"
-            ).strip()
+        # element_markdown = markdownify(
+        #     element_str, heading_style="ATX", bullets="-", code_language="python"
+        # ).strip()
 
-            em_code_elements: list = findall(r"`\*\d+\*`", element_markdown)
-            if em_code_elements:
-                for element in em_code_elements:
-                    digits_search: str = search(r"\d+", element)
-                    element_markdown = element_markdown.replace(
-                        element, f"*`{digits_search.group()}`*"
-                    )
+        # em_code_elements: list = findall(r"`\*\d+\*`", element_markdown)
+        # if em_code_elements:
+        #     for element in em_code_elements:
+        #         digits_search: str = search(r"\d+", element)
+        #         element_markdown = element_markdown.replace(
+        #             element, f"*`{digits_search.group()}`*"
+        #         )
 
-            if is_title:
-                title = element_markdown
-            else:
-                description += f"{element_markdown}\n\n"
+        # if is_title:
+        #     title = element_markdown
+        # else:
+        #     description += f"{element_markdown}\n\n"
 
-        return (
-            title,
-            description.strip().replace("*", "**").replace("\n```\n", "```\n"),
-        )
+        # return (
+        #     title,
+        #     description.strip().replace("*", "**").replace("\n```\n", "```\n"),
+        # )
 
     def convert_to_filename(self, text: str) -> str:
         return text.lower().replace(" ", "_")

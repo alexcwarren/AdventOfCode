@@ -131,3 +131,6 @@ dmypy.json
 # Visual Studio
 .vscode/
 *.code-workspace
+
+# Markdown Converter
+markdown_converter/markdown.md
