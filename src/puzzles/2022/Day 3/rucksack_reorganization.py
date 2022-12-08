@@ -1,3 +1,4 @@
+from functools import singledispatchmethod
 from argparse import ArgumentParser
 from os import path
 from string import ascii_letters
@@ -48,7 +49,12 @@ class RucksackReorganization:
                 shared_item_sum += prioritiy_numbers[shared_item]
         return shared_item_sum
 
-    def find_shared_item(self, contents: str) -> str:
+    @singledispatchmethod
+    def find_shared_item(self, collection):
+        raise NotImplementedError
+
+    @find_shared_item.register
+    def find_shared_item_given_str(self, contents: str) -> str:
         num_items: int = len(contents)
         fst_half: str = contents[:num_items // 2]
         snd_half: str = contents[num_items // 2:]
@@ -58,6 +64,10 @@ class RucksackReorganization:
         return None
 
     def solve_part2(self):
+        pass
+
+    @find_shared_item.register
+    def find_shared_item_given_list(self, groups: list) -> str:
         pass
 
 
