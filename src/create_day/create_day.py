@@ -1,13 +1,16 @@
 from argparse import ArgumentParser
-from os import getcwd, mkdir, path
+from os import getcwd
+from pathlib import Path
 from re import search, sub
 from shutil import copy
 
 from bs4 import BeautifulSoup
+from ratelimit import RateLimitException, limits
 from requests import get as get_response
 
 from markdown_converter.markdown_converter import MarkdownConverter
 
+REQUEST_TIME_LIMIT_SECS: int = 20
 
 class DayCreator:
     """A class to create all necessary folder and files to work on given an
@@ -33,13 +36,18 @@ class DayCreator:
 
         Process command-line arguments.
         """
-        self.__current_dir: str = current_directory
-        self.__templates_dir: str = f"{self.__current_dir}/templates"
+        self.__current_dir: Path = Path(current_directory)
+        self.__templates_dir: Path = self.__current_dir / "templates"
         self.__process_arguments()
 
     def create_new_day(self):
         """ "Retrieve Day data and create its directories and files."""
-        self.__download_url_data()
+        try:
+            self.__download_url_data()
+        except RateLimitException as exc:
+            print(exc)
+            exit()
+        self.__check_puzzles_directory()
         self.__check_year_directory()
         self.__create_day_directory()
         self.__create_files()
@@ -69,15 +77,12 @@ class DayCreator:
         if "adventofcode.com" not in self.__url:
             parser.error(f'{self.__url}: Please provide "adventofcode.com" URL.')
 
+    @limits(calls=1, period=REQUEST_TIME_LIMIT_SECS)
     def __download_url_data(self):
         """Retrieve HTML content from self.__url."""
-        headers: dict[str] = {
-            "User-Agent": "github.com/alexcwarren/advent-of-code",
-            "From": "alexcwarren.info@gmail.com"
-        }
-        response = get_response(self.__url, headers=headers)
+        response = get_response(self.__url)
         self.__html_content = BeautifulSoup(response.content, "html.parser")
-        self._year: str = self.__get_year()
+        self.__year: str = self.__get_year()
         (
             self.__problem_title,
             self.__day_number,
@@ -94,7 +99,7 @@ class DayCreator:
         year = search(r".*(\d{4}).*", header.text)
         return year.group(1)
 
-    def __get_problem_header(self) -> tuple[str]:
+    def __get_problem_header(self) -> tuple:
         """Extract problem header info from previously downloaded HTML content."""
         problem_header: str = self.__html_content.find("h2").text.strip()
         day_match = search(r"\d", problem_header)
@@ -111,19 +116,25 @@ class DayCreator:
         """Return text in its snakecase form."""
         return text.lower().replace(" ", "_")
 
+    def __check_puzzles_directory(self):
+        """Check that puzzles directory exists - create it if it doesn't."""
+        self.__puzzles_dir: Path = self.__current_dir.parent / "puzzles"
+        if not self.__puzzles_dir.exists():
+            self.__puzzles_dir.mkdir()
+
     def __check_year_directory(self):
         """Check that year directory exists - create it if it doesn't."""
-        self.__year_dir: str = f"{self.__current_dir}/{self._year}"
-        if not path.isdir(self.__current_dir):
-            mkdir(self.__year_dir)
+        self.__year_dir: Path = self.__puzzles_dir / self.__year
+        if not self.__year_dir.exists():
+            self.__year_dir.mkdir()
 
     def __create_day_directory(self):
         """Create day directory within year directory.
         Raise exception if it exists already.
         """
-        self.__day_dir: str = f"{self.__year_dir}/Day {self.__day_number}"
+        self.__day_dir: Path = self.__year_dir / f"Day {self.__day_number}"
         try:
-            mkdir(self.__day_dir)
+            self.__day_dir.mkdir()
         except Exception as exception:
             print(exception)
             exit()
@@ -138,43 +149,28 @@ class DayCreator:
 
     def __create_python_file(self):
         """Copy template.py into Day directory and replace content with this Day's info."""
-        python_file: str = f"{self.__day_dir}/{self.__problem_name}.py"
-        copy(f"{self.__templates_dir}/template.py", python_file)
-
-        file_contents: str = self.__get_file_contents(python_file)
-        file_contents = (
-            file_contents.replace(self.__REPLACEMENTS.CLASS_NAME, self.__class_name)
+        python_file: Path = self.__day_dir / f"{self.__problem_name}.py"
+        copy(self.__templates_dir / "template.py", python_file)
+        python_file.write_text(
+            python_file.read_text()
+            .replace(self.__REPLACEMENTS.CLASS_NAME, self.__class_name)
             .replace(self.__REPLACEMENTS.PROBLEM_NAME, self.__problem_name)
             .replace(self.__REPLACEMENTS.DAY_NUMBER, self.__day_number)
         )
 
-        self.__write_file_contents(file_contents, python_file)
-
     def __create_markdown_file(self):
         """Copy Outline.md into Day directory and replace content with this Day's info."""
-        outline_file: str = f"{self.__day_dir}/Outline.md"
-        copy(f"{self.__templates_dir}/Outline.md", outline_file)
+        outline_file: Path = self.__day_dir / "Outline.md"
+        copy(self.__templates_dir / "Outline.md", outline_file)
 
-        file_contents: str = self.__get_file_contents(outline_file)
+        file_contents: str = outline_file.read_text()
         file_contents = (
             file_contents.replace(self.__REPLACEMENTS.TITLE, self.__problem_title)
             .replace(self.__REPLACEMENTS.URL, self.__url)
             .replace(self.__REPLACEMENTS.DESCRIPTION, self.__problem_description)
         )
 
-        self.__write_file_contents(file_contents, outline_file)
-
-    def __get_file_contents(self, filepath: str) -> str:
-        """Return contents of provided filepath."""
-        file_contents = None
-        with open(filepath, "r") as read_file:
-            file_contents = read_file.read()
-        return file_contents
-
-    def __write_file_contents(self, file_contents: str, filepath: str):
-        """Write provided file contents to provided filepath."""
-        with open(filepath, "w") as write_file:
-            write_file.write(file_contents)
+        outline_file.write_text(file_contents)
 
     def __create_sample_data_file(self):
         """Create empty sample.in file in Day directory."""
@@ -182,7 +178,8 @@ class DayCreator:
 
     def __create_empty_file(self, filename: str):
         """Create empty file in Day directory with provided filename."""
-        self.__write_file_contents("", f"{self.__day_dir}/{filename}")
+        filepath: Path = self.__day_dir / filename
+        filepath.write_text("")
 
     def __create_input_data_file(self):
         """Create empty input.in file in Day directory."""
@@ -190,15 +187,14 @@ class DayCreator:
 
     def __create_python_test_file(self):
         """Copy test.py into Day directory and replace content with this Day's info."""
-        test_file: str = f"{self.__day_dir}/test_{self.__problem_name}.py"
-        copy(f"{self.__templates_dir}/test.py", test_file)
+        test_file: Path = self.__day_dir / f"test_{self.__problem_name}.py"
+        copy(self.__templates_dir / "test.py", test_file)
 
-        file_contents: str = self.__get_file_contents(test_file)
-        file_contents = file_contents.replace(
-            self.__REPLACEMENTS.PROBLEM_NAME, self.__problem_name
-        ).replace(self.__REPLACEMENTS.CLASS_NAME, self.__class_name)
-
-        self.__write_file_contents(file_contents, test_file)
+        test_file.write_text(
+            test_file.read_text()
+            .replace(self.__REPLACEMENTS.PROBLEM_NAME, self.__problem_name)
+            .replace(self.__REPLACEMENTS.CLASS_NAME, self.__class_name)
+        )
 
 
 if __name__ == "__main__":
