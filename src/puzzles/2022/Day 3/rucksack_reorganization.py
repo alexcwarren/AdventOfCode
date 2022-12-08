@@ -36,7 +36,7 @@ class RucksackReorganization:
                 f"Sum of priorities of shared items is {self.sum_shared_item_priorities()}"
             )
         else:
-            print(f"{self.solve_part2()}")
+            print(f"Sum of priorities of group type item is {self.sum_group_type_item_priorities()}")
 
     def sum_shared_item_priorities(self) -> int:
         prioritiy_numbers: dict[str, int] = {
@@ -63,8 +63,8 @@ class RucksackReorganization:
                 return item
         return None
 
-    def solve_part2(self):
-        pass
+    def sum_group_type_item_priorities(self) -> int:
+        return 0
 
     @find_shared_item.register
     def find_shared_item_given_list(self, groups: list) -> str:

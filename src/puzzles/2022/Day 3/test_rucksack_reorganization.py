@@ -13,4 +13,4 @@ def test_sample_input(script):
 
 
 def test_actual_input(script):
-    pass
+    assert script.sum_group_type_item_priorities() == 70
