@@ -9,7 +9,7 @@ def script():
 
 
 def test_sample_input(script):
-    pass
+    assert script.sum_shared_item_priorities() == 157
 
 
 def test_actual_input(script):
