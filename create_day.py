@@ -71,7 +71,11 @@ class DayCreator:
 
     def __download_url_data(self):
         """Retrieve HTML content from self.__url."""
-        response = get_response(self.__url)
+        headers: dict[str] = {
+            "User-Agent": "github.com/alexcwarren/advent-of-code",
+            "From": "alexcwarren.info@gmail.com"
+        }
+        response = get_response(self.__url, headers=headers)
         self.__html_content = BeautifulSoup(response.content, "html.parser")
         self._year: str = self.__get_year()
         (
