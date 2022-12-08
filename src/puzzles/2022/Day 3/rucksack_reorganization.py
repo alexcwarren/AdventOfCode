@@ -30,11 +30,11 @@ class RucksackReorganization:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.solve_part1()}")
+            print(f"{self.sum_shared_item_priorities()}")
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def sum_shared_item_priorities(self):
         pass
 
     def solve_part2(self):
