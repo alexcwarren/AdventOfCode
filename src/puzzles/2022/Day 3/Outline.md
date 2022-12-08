@@ -131,3 +131,33 @@ Priorities for these items must still be found to organize the sticker attachmen
 Find the item type that corresponds to the badges of each three-Elf group. **What is the sum of the priorities of those item types?**
 
 ### Solution Outline - Part 2 {#solution-outline-2}
+
+- Every 3 lines is a **group** of elves' rucksacks
+- Find the item shared amongst **all 3** rucksacks
+- Sum all group items' priority numbers
+
+```python
+def solve_part2():
+    GROUP_SIZE = 3
+    counter = 1
+    group = list()
+    foreach rucksack in input_file:
+        if counter % 3 == 0:
+            shared_item = find_shared_item(group)
+            group.clear()
+        else:
+            group.append(rucksack)
+        counter += 1
+
+def find_shared_item(rucksacks):
+    possible_shared_items = set()
+    for i, rucksack in enumerate(rucksacks[1:]):
+        items = possible_shared_items
+        if i == 0:
+            items = rucksack[0]
+        elif i > 1 and len(possible_shared_items) == 1:
+            return possible_shared_items[0]
+        for item in items:
+            if item in rucksack:
+                possible_shared_items.append(item)
+```
