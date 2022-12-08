@@ -84,11 +84,16 @@ def solve_part1():
     foreach rucksack
         shared_item = find_shared_item(rucksack)
         shared_item_sum += priority_numbers[shared_item]
-
     return shared_item_sum
 
 def find_shared_item(contents):
-    return Counter("contents").most_common()[0][0]
+    num_items = len(contents)
+    fst_half = contents[: num_items // 2]
+    snd_half = contents[num_items // 2 :]
+    for item in fst_half:
+      if item in snd_half:
+        return item
+    return None
 ```
 
 ## Part 2 {#part-2}
