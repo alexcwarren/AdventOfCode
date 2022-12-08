@@ -1,5 +1,5 @@
 from os import getcwd
-from re import findall, match, search, sub
+from re import match, sub
 
 from bs4 import BeautifulSoup
 from markdownify import markdownify
@@ -11,8 +11,8 @@ class MarkdownConverter:
     Specifically used for \"Advent of Code\" Problem Descriptions.
     """
 
-    def __init__(self, url: str = ""):
-        """Set `url` (if provided).
+    def __init__(self, url: str = "https://adventofcode.com"):
+        """Set `url` to what is provided or \"https://adventofcode.com\" if not provided.
 
         Set `input_file` to html.txt.
 
@@ -43,20 +43,20 @@ class MarkdownConverter:
         if match(r"\s+", element_str) or "h2" in element_str:
             return ""
 
-        elif "href" in element_str:
+        elif "href" in element_str and element_str.startswith("/"):
             element_str = sub(r"href=\"(.+)\"", f'href="{self.url}\\g<1>"', element_str)
 
         markdown_element = markdownify(
             element_str, heading_style="ATX", bullets="-", code_language="python"
         ).strip()
 
-        em_code_elements: list = findall(r"`\*\d+\*`", markdown_element)
-        if em_code_elements:
-            for element in em_code_elements:
-                digits_search: str = search(r"\d+", element)
-                markdown_element = markdown_element.replace(
-                    element, f"*`{digits_search.group()}`*"
-                )
+        # Correct order of ` and * characters in inline code
+        markdown_element = sub(
+            r"`(\*+)(\w+)(\*+)`", r"\g<1>`\g<2>`\g<3>", markdown_element
+        )
+
+        # Replace italic with strong emphasis
+        # Remove extra newline in code blocks
         markdown_element = f"{markdown_element}\n\n".replace("*", "**").replace(
             "\n```\n", "```\n"
         )
