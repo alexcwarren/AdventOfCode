@@ -52,6 +52,45 @@ Find the item type that appears in both compartments of each rucksack. **What is
 
 ### Solution Outline - Part 1 {#solution-outline-1}
 
+#### Details
+
+- Each line represents the **contents of a rucksack**.
+- The **1st** and **2nd** *halves* of the rucksack's contents are in the **1st** and **2nd** *compartments*, respectively.
+- There is exactly **one item** of the contents that is in **both** compartments
+- **All** rucksack content items can **only** be comprised of *lowercase* and/or *UPPERCASE* letters
+- Items are **case-sensitive**
+- Each item has a priority:
+  - **a - z** have priorities **1 - 26**
+  - **A - Z** have priorities **27 - 52**
+
+#### Goal(s)
+
+- Find the one, **shared** item that is in both compartments for each rucksack
+- Sum priority numbers for each shared item
+
+#### Pseudocode
+
+```python
+from string import ascii_lowercase, ascii_uppercase
+from collections import Counter
+
+priority_numbers = {
+    letter: number
+    for number, letter in enumerate(ascii_lowercase + ascii_uppercase)
+}
+
+def solve_part1():
+    shared_item_sum = 0
+    foreach rucksack
+        shared_item = find_shared_item(rucksack)
+        shared_item_sum += priority_numbers[shared_item]
+
+    return shared_item_sum
+
+def find_shared_item(contents):
+    return Counter("contents").most_common()[0][0]
+```
+
 ## Part 2 {#part-2}
 
 ### Problem Description - Part 2 {#problem-description-2}
