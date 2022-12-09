@@ -34,7 +34,9 @@ class CalorieCounter:
                 f"Elf carrying the most calories is carrying {self.find_most_calories()}"
             )
         else:
-            print(f"Top 3 elves are carrying calories totalling {self.find_top3_most_calories()}")
+            print(
+                f"Top 3 elves are carrying calories totalling {self.find_top3_most_calories()}"
+            )
 
     def find_most_calories(self) -> int:
         calories_sum: int = 0
@@ -57,14 +59,17 @@ class CalorieCounter:
 
         calories_sum: int = 0
         max_calories_sums: list[int] = [0] * 3
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
             is_last_line: bool = i == len(lines) - 1
 
             if is_last_line and line.isdigit():
                 calories_sum += int(line)
 
             if not line.isdigit() or is_last_line:
-                if any(calories_sum > max_calories_sum for max_calories_sum in max_calories_sums):
+                if any(
+                    calories_sum > max_calories_sum
+                    for max_calories_sum in max_calories_sums
+                ):
                     max_calories_sums.remove(min(max_calories_sums))
                     max_calories_sums.append(calories_sum)
                 calories_sum = 0
