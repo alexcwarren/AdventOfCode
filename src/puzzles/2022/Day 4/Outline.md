@@ -64,6 +64,17 @@ Some of the pairs have noticed that one of their assignments **fully contains** 
 
 ### Solution Outline - Part 1 {#solution-outline-1}
 
+```python
+for line in input_file:
+   range1_str, range2_str = line.strip().split(",")
+
+   range1_id_a, range1_id_b = range1_str.split("-")
+   range1 = range(range1_id_a, range1_id_b + 1)
+
+   range2_id_a, range2_id_b = range2_str.split("-")
+   range2 = range(range2_id_a, range2_id_b + 1)
+```
+
 ## Part 2 {#part-2}
 
 ### Problem Description - Part 2 {#problem-description-2}
