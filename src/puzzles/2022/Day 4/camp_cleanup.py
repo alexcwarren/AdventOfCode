@@ -30,11 +30,11 @@ class CampCleanup:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.solve_part1()}")
+            print(f"Number of ranges contained by another = {self.get_num_contained_ranges()}")
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def get_num_contained_ranges(self):
         pass
 
     def solve_part2(self):
