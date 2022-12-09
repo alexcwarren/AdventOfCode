@@ -10,7 +10,7 @@ from requests import get as get_response
 
 from markdown_converter.markdown_converter import MarkdownConverter
 
-REQUEST_TIME_LIMIT_SECS: int = 20
+REQUEST_TIME_LIMIT_SECS: int = 900
 
 class DayCreator:
     """A class to create all necessary folder and files to work on given an
@@ -77,7 +77,7 @@ class DayCreator:
         if "adventofcode.com" not in self.__url:
             parser.error(f'{self.__url}: Please provide "adventofcode.com" URL.')
 
-    @limits(calls=1, period=REQUEST_TIME_LIMIT_SECS)
+    @limits(calls=15, period=REQUEST_TIME_LIMIT_SECS)
     def __download_url_data(self):
         """Retrieve HTML content from self.__url."""
         response = get_response(self.__url)
