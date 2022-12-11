@@ -58,7 +58,22 @@ class CampCleanup:
         return (int(num) for num in range_str.split("-"))
 
     def get_num_overlapped_ranges(self):
-        pass
+        num_overlapped_ranges: int = 0
+        with open(self.__filepath, "r") as read_file:
+            for pair in read_file:
+                range1_str, range2_str = pair.strip().split(",")
+
+                range1_id_a, range1_id_b = self.get_range_parameters(range1_str)
+                range1 = range(range1_id_a, range1_id_b + 1)
+
+                range2_id_a, range2_id_b = self.get_range_parameters(range2_str)
+                range2 = range(range2_id_a, range2_id_b + 1)
+
+                if any(id in range2 for id in range1) or all(
+                    id in range1 for id in range2
+                ):
+                    num_overlapped_ranges += 1
+        return num_overlapped_ranges
 
 
 if __name__ == "__main__":
