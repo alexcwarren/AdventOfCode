@@ -99,4 +99,20 @@ So, in this example, the number of overlapping assignment pairs is **`4`**.
 
 ### Solution Outline - Part 2 {#solution-outline-2}
 
+- **GOAL**: Find number of pairs that have overlapping ranges
 
+```python
+num_overlapped_ranges = 0
+for line in input_file:
+   range1_str, range2_str = line.strip().split(",")
+
+   range1_id_a, range1_id_b = range1_str.split("-")
+   range1 = range(range1_id_a, range1_id_b + 1)
+
+   range2_id_a, range2_id_b = range2_str.split("-")
+   range2 = range(range2_id_a, range2_id_b + 1)
+
+   if any(id in range2 for id in range1):
+      num_overlapped_ranges += 1
+return num_overlapped_ranges
+```
