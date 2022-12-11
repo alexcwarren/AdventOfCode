@@ -73,6 +73,8 @@ for line in input_file:
 
    range2_id_a, range2_id_b = range2_str.split("-")
    range2 = range(range2_id_a, range2_id_b + 1)
+
+   return all(id in range2 for id in range1)
 ```
 
 ## Part 2 {#part-2}
