@@ -65,6 +65,7 @@ Some of the pairs have noticed that one of their assignments **fully contains** 
 ### Solution Outline - Part 1 {#solution-outline-1}
 
 ```python
+num_contained_ranges = 0
 for line in input_file:
    range1_str, range2_str = line.strip().split(",")
 
@@ -74,7 +75,9 @@ for line in input_file:
    range2_id_a, range2_id_b = range2_str.split("-")
    range2 = range(range2_id_a, range2_id_b + 1)
 
-   return all(id in range2 for id in range1)
+   if all(id in range2 for id in range1):
+      num_contained_ranges += 1
+return num_contained_ranges
 ```
 
 ## Part 2 {#part-2}

@@ -34,8 +34,24 @@ class CampCleanup:
         else:
             print(f"{self.solve_part2()}")
 
-    def get_num_contained_ranges(self):
-        pass
+    def get_num_contained_ranges(self) -> int:
+        num_contained_ranges_count: int = 0
+        with open(self.__filepath, "r") as read_file:
+            for pair in read_file:
+                range1_str, range2_str = pair.strip().split(",")
+
+                range1_id_a, range1_id_b = range1_str.split("-")
+                range1 = range(range1_id_a, range1_id_b + 1)
+
+                range2_id_a, range2_id_b = range2_str.split("-")
+                range2 = range(range2_id_a, range2_id_b + 1)
+
+                if all(id in range2 for id in range1):
+                    num_contained_ranges_count += 1
+        return num_contained_ranges_count
+
+
+
 
     def solve_part2(self):
         pass
