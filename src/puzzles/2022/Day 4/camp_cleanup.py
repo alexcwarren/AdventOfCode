@@ -34,7 +34,7 @@ class CampCleanup:
                 f"Number of ranges contained by another = {self.get_num_contained_ranges()}"
             )
         else:
-            print(f"{self.solve_part2()}")
+            print(f"Number of ranges overlapped by another = {self.get_num_overlapped_ranges()}")
 
     def get_num_contained_ranges(self) -> int:
         num_contained_ranges: int = 0
@@ -57,7 +57,7 @@ class CampCleanup:
     def get_range_parameters(self, range_str) -> tuple:
         return (int(num) for num in range_str.split("-"))
 
-    def solve_part2(self):
+    def get_num_overlapped_ranges(self):
         pass
 
 
