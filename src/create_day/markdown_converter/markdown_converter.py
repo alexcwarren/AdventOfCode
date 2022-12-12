@@ -33,7 +33,7 @@ class MarkdownConverter:
 
         Correct incomplete href attributes in `<a>` tags.
 
-        Fix order of backtick and asterisk for emphasized inline code.
+        Fix order of non-word character and asterisk for emphasized text.
 
         Replace italic with strong emphasis.
 
@@ -50,9 +50,9 @@ class MarkdownConverter:
             element_str, heading_style="ATX", bullets="-", code_language="python"
         ).strip()
 
-        # Correct order of ` and * characters in inline code
+        # Correct order of non-word character and * characters in text
         markdown_element = sub(
-            r"`(\*+)(\w+)(\*+)`", r"\g<1>`\g<2>`\g<3>", markdown_element
+            r"(\S)(\*+)(\w+)(\*+)(\S)", r"\g<2>\g<1>\g<3>\g<5>\g<4>", markdown_element
         )
 
         # Replace italic with strong emphasis
