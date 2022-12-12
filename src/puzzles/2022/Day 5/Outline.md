@@ -60,10 +60,10 @@ Then, both crates are moved from stack 2 to stack 1. Again, because crates are m
 Finally, one crate is moved from stack 1 to stack 2:
 
 ```python
-        [**Z**]
+        [Z]
         [N]
         [D]
-[**C**] [**M**] [P]
+[C] [M] [P]
  1   2   3
 ```
 
@@ -72,6 +72,14 @@ The Elves just need to know **which crate will end up on top of each stack**; in
 **After the rearrangement procedure completes, what crate ends up on top of each stack?**
 
 ### Solution Outline - Part 1
+
+- Convert each stack of crates into a deque
+- Parse and execute each instruction
+- Pop each crate stack (*in order*) to produce **the sequence of crates that end up on top of each stack**
+
+```python
+
+```
 
 ## Part 2
 
