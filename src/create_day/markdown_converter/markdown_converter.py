@@ -55,11 +55,16 @@ class MarkdownConverter:
             r"(\S)(\*+)(\w+)(\*+)(\S)", r"\g<2>\g<1>\g<3>\g<5>\g<4>", markdown_element
         )
 
-        # Replace italic with strong emphasis
+        # Remove emphasis from code blocks
+        if '```' in markdown_element:
+            markdown_element = markdown_element.replace("*", "")
+
+        # Replace italic with strong emphasis (not in code blocks)
+            markdown_element = markdown_element.replace("*", "**")
+
         # Remove extra newline in code blocks
-        markdown_element = f"{markdown_element}\n\n".replace("*", "**").replace(
-            "\n```\n", "```\n"
-        )
+        markdown_element = f"{markdown_element}\n\n".replace("\n```\n", "```\n")
+
         return markdown_element
 
     def write_markdown(self):
