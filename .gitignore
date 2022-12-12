@@ -133,5 +133,5 @@ dmypy.json
 *.code-workspace
 
 # Markdown Converter
-markdown_converter/html.txt
-markdown_converter/markdown.md
+src/create_day/markdown_converter/html.txt
+src/create_day/markdown_converter/markdown.md
