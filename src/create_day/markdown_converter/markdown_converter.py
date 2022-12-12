@@ -22,7 +22,7 @@ class MarkdownConverter:
         self.intput_file: str = f"{getcwd()}/html.txt"
         self.output_file: str = f"{getcwd()}/markdown.md"
 
-    def get_markdown(self, html) -> str:
+    def get_markdown(self, html: BeautifulSoup) -> str:
         """Return string of all HTML elements converted to Markdown."""
         return "".join(self.get_markdown_element(element) for element in html).strip()
 
@@ -56,11 +56,11 @@ class MarkdownConverter:
         )
 
         # Remove emphasis from code blocks
-        if '```' in markdown_element:
+        if markdown_element.startswith(r"```"):
             markdown_element = markdown_element.replace("*", "")
 
         # Replace italic with strong emphasis (not in code blocks)
-            markdown_element = markdown_element.replace("*", "**")
+        markdown_element = markdown_element.replace("*", "**")
 
         # Remove extra newline in code blocks
         markdown_element = f"{markdown_element}\n\n".replace("\n```\n", "```\n")
