@@ -38,7 +38,7 @@ class SupplyStacks:
         if self.is_part1:
             print(f"{self.get_crates_on_top()}")
         else:
-            print(f"{self.solve_part2()}")
+            print(f"{self.get_crates_on_top2()}")
 
     def get_crates_on_top(self) -> str:
         self.EMPTY_CRATE: str = ""
@@ -122,7 +122,7 @@ class SupplyStacks:
                 )
         return stacks
 
-    def solve_part2(self):
+    def get_crates_on_top2(self):
         pass
 
 
