@@ -30,11 +30,11 @@ class TuningTrouble:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.solve_part1()}")
+            print(f"{self.get_start_of_packet()}")
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def get_start_of_packet(self):
         pass
 
     def solve_part2(self):
