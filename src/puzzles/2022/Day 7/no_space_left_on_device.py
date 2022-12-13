@@ -30,11 +30,11 @@ class NoSpaceLeftOnDevice:
 
     def print_result(self):
         if self.is_part1:
-            print(f"{self.solve_part1()}")
+            print(f"{self.sum_sizes_of_directories()}")
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def sum_sizes_of_directories(self, max_size: int = 10000):
         pass
 
     def solve_part2(self):
