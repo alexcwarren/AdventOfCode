@@ -32,15 +32,14 @@ class TuningTrouble:
         if self.is_part1:
             print(f"{self.get_start_of_packet()}")
         else:
-            print(f"{self.solve_part2()}")
+            print(f"{self.get_start_of_message()}")
 
-    def get_start_of_packet(self) -> int:
+    def get_start_of_packet(self, packet_length: int = 4) -> int:
         with open(self.__filepath, "r") as read_file:
             datastream = read_file.read()
 
-        PACKET_LENGTH: int = 4
-        curr_packet: str = datastream[:PACKET_LENGTH]
-        for i, char in enumerate(datastream[PACKET_LENGTH:], PACKET_LENGTH + 1):
+        curr_packet: str = datastream[:packet_length]
+        for i, char in enumerate(datastream[packet_length:], packet_length + 1):
             if self.all_chars_unique(curr_packet):
                 return i - 1
             curr_packet = f"{curr_packet[1:]}{char}"
@@ -59,8 +58,8 @@ class TuningTrouble:
             curr_sequence += char
         return True
 
-    def solve_part2(self):
-        pass
+    def get_start_of_message(self):
+        return self.get_start_of_packet(14)
 
 
 if __name__ == "__main__":
