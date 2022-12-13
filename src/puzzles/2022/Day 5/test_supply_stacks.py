@@ -9,7 +9,7 @@ def script():
 
 
 def test_sample_input_part1(script):
-    pass
+    assert script.get_crates_on_top() == "CMZ"
 
 
 def test_sample_input_part2(script):
