@@ -39,11 +39,11 @@ class TuningTrouble:
             datastream = read_file.read()
 
         PACKET_LENGTH: int = 4
-        curr_packet: str = datastream[:PACKET_LENGTH - 1]
-        for i, char in enumerate(datastream[PACKET_LENGTH - 1:]):
+        curr_packet: str = datastream[:PACKET_LENGTH]
+        for i, char in enumerate(datastream[PACKET_LENGTH:], PACKET_LENGTH + 1):
             if self.all_chars_unique(curr_packet):
-                return i
-            curr_packet += f"{curr_packet[1:]}{char}"
+                return i - 1
+            curr_packet = f"{curr_packet[1:]}{char}"
         return -1
 
     def all_chars_unique(self, packet: str, is_case_sensitive: bool = False) -> bool:
@@ -53,7 +53,7 @@ class TuningTrouble:
             packet = packet.lower()
 
         curr_sequence: str = packet[0]
-        for char in packet[1:]:
+        for i, char in enumerate(packet[1:]):
             if char in curr_sequence:
                 return False
             curr_sequence += char
