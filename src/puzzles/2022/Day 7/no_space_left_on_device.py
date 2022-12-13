@@ -30,8 +30,12 @@ class File:
 
 class NoSpaceLeftOnDevice:
     class Command:
+        class TYPE:
+            CD: str = "cd"
+            LS: str = "ls"
+
         def __init__(self, string: str):
-            pass
+            self.type: str = None
 
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "no_space_left_on_device.py"
@@ -65,9 +69,18 @@ class NoSpaceLeftOnDevice:
             print(f"{self.solve_part2()}")
 
     def sum_sizes_of_directories(self, max_size: int = 10000):
+        directories: dict = dict()
         with open(self.__filepath, "r") as read_file:
+            curr_dir: Directory = None
             for line in read_file:
                 command = self.Command(line)
+                if command.type == self.Command.TYPE.CD:
+                    # TODO Attempt to create new Directory
+                    pass
+                elif command.type == self.Command.TYPE.LS:
+                    # TODO Add children to curr_dir
+                    pass
+        return sum(d.get_size() for d in directories if d.get_size() <= max_size)
 
     def solve_part2(self):
         pass
