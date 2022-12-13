@@ -10,7 +10,7 @@ You can hear birds chirping and raindrops hitting leaves as the expedition proce
 
 The device the Elves gave you has problems with more than just its communication system. You try to run a system update:
 
-```python
+```powershell
 $ system-update --please --pretty-please-with-sugar-on-top
 Error: No space left on device
 ```
@@ -19,7 +19,7 @@ Perhaps you can delete some files to make space for the update?
 
 You browse around the filesystem to assess the situation and save the resulting terminal output (your puzzle input). For example:
 
-```python
+```powershell
 $ cd /
 $ ls
 dir a
@@ -59,7 +59,7 @@ Within the terminal output, lines that begin with `$` are **commands you execute
 
 Given the commands and output in the example above, you can determine that the filesystem looks visually like this:
 
-```python
+```powershell
 - / (dir)
   - a (dir)
     - e (dir)
