@@ -34,8 +34,30 @@ class TuningTrouble:
         else:
             print(f"{self.solve_part2()}")
 
-    def get_start_of_packet(self):
-        pass
+    def get_start_of_packet(self) -> int:
+        with open(self.__filepath, "r") as read_file:
+            datastream = read_file.read()
+
+        PACKET_LENGTH: int = 4
+        curr_packet: str = datastream[:PACKET_LENGTH - 1]
+        for i, char in enumerate(datastream[PACKET_LENGTH - 1:]):
+            if self.all_chars_unique(curr_packet):
+                return i
+            curr_packet += f"{curr_packet[1:]}{char}"
+        return -1
+
+    def all_chars_unique(self, packet: str, is_case_sensitive: bool = False) -> bool:
+        if len(packet) <= 0:
+            return True
+        if not is_case_sensitive:
+            packet = packet.lower()
+
+        curr_sequence: str = packet[0]
+        for char in packet[1:]:
+            if char in curr_sequence:
+                return False
+            curr_sequence += char
+        return True
 
     def solve_part2(self):
         pass
