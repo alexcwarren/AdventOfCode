@@ -29,6 +29,10 @@ class File:
 
 
 class NoSpaceLeftOnDevice:
+    class Command:
+        def __init__(self, string: str):
+            pass
+
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "no_space_left_on_device.py"
         self.is_part1: bool = is_part1
@@ -61,7 +65,9 @@ class NoSpaceLeftOnDevice:
             print(f"{self.solve_part2()}")
 
     def sum_sizes_of_directories(self, max_size: int = 10000):
-        pass
+        with open(self.__filepath, "r") as read_file:
+            for line in read_file:
+                command = self.Command(line)
 
     def solve_part2(self):
         pass
