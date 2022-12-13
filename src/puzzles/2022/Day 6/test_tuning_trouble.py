@@ -9,7 +9,7 @@ def script():
 
 
 def test_sample_input_part1(script):
-    pass
+    assert script.get_start_of_packet() == 7
 
 
 def test_sample_input_part2(script):
