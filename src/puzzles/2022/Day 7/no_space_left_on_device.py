@@ -2,6 +2,16 @@ from argparse import ArgumentParser
 from os import path
 
 
+class Directory:
+    def __init__(self):
+        pass
+
+
+class File:
+    def __init__(self):
+        pass
+
+
 class NoSpaceLeftOnDevice:
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "no_space_left_on_device.py"
