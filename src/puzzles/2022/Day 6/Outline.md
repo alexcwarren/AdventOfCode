@@ -41,6 +41,29 @@ Here are a few more examples:
 
 ### Solution Outline - Part 1
 
+```python
+def solve_part1(packet_length = 4):
+    curr_packet = datastream[:packet_length - 1]
+    foreach i, char in enumerate(datastream[packet_length - 1:]):
+        if all_chars_unique(curr_packet):
+            return i
+        curr_packet += f"{currpacket[1:]}{char}"
+    return -1
+
+def all_chars_unique(packet, is_case_sensitive = False):
+    if len(packet) <= 0:
+        return True
+    if not is_case_sensitive:
+        packet = packet.lower()
+
+    curr_sequence = packet[0]
+    for char in packet[1:]:
+        if char in curr_sequence:
+            return False
+        curr_sequence += char
+    return True
+```
+
 ## Part 2
 
 ### Problem Description - Part 2
