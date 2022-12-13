@@ -3,13 +3,29 @@ from os import path
 
 
 class Directory:
-    def __init__(self):
-        pass
+    def __init__(self, name: str):
+        self.name: str = name
+        self.children: dict = dict()
+
+    def add_child(self, child):
+        self.children.setdefault(child.name, child)
+
+    def get_size(self) -> int:
+        size: int = 0
+        for child in self.children:
+            if isinstance(child, File):
+                size += child.size
+            elif isinstance(child, Directory):
+                size += child.get_size()
+            else:
+                raise Exception(f"ERROR: Invalid type: {child}")
+        return size
 
 
 class File:
-    def __init__(self):
-        pass
+    def __init__(self, name: str, size: int):
+        self.name: str = name
+        self.size: int = size
 
 
 class NoSpaceLeftOnDevice:
