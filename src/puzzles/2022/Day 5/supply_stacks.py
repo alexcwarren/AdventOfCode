@@ -57,13 +57,13 @@ class SupplyStacks:
                         crate_rows, num_stacks = self.parse_crate_rows(rows)
                 elif line and not match(r"\s+", line):
                     moves.append(self.parse_move(line.rstrip()))
-        # print("\n".join(",".join(row) for row in rows))
 
         stacks = self.transpose_rows_to_stacks(crate_rows, num_stacks)
-        # print("\n".join(",".join(stack) for stack in stacks))
-        # print(moves)
 
-        new_stacks = self.execute_moves(stacks, moves)
+        if self.is_part1:
+            new_stacks = self.execute_moves(stacks, moves)
+        else:
+            new_stacks = self.execute_moves2(stacks, moves)
 
         return "".join(stack.pop() for stack in new_stacks)
 
@@ -122,8 +122,17 @@ class SupplyStacks:
                 )
         return stacks
 
-    def get_crates_on_top2(self):
-        pass
+    def get_crates_on_top2(self) -> str:
+        self.is_part1 = False
+        return self.get_crates_on_top()
+
+    def execute_moves2(self, stacks: list, moves: dict) -> list:
+        for move in moves:
+            crates_to_move: deque = deque()
+            for _ in range(move[self.QUANTITY]):
+                crates_to_move.appendleft(stacks[move[self.SOURCE] - 1].pop())
+            stacks[move[self.TARGET] - 1].extend(crates_to_move)
+        return stacks
 
 
 if __name__ == "__main__":
