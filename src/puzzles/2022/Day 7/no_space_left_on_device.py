@@ -3,9 +3,11 @@ from os import path
 
 
 class Directory:
-    def __init__(self, name: str, parent = None):
+    ROOT: str = "/"
+
+    def __init__(self, name: str, parent_name: str = None):
         self.name: str = name
-        self.parent = None
+        self.parent_name: str = parent_name
         self.children: dict = dict()
 
     def add_child(self, child):
@@ -14,19 +16,31 @@ class Directory:
     def get_size(self) -> int:
         size: int = 0
         for child in self.children:
-            if isinstance(child, File):
+            if isinstance(child, File) or child is File:
                 size += child.size
-            elif isinstance(child, Directory):
+            elif isinstance(child, Directory) or child is Directory:
                 size += child.get_size()
             else:
                 raise Exception(f"ERROR: Invalid type: {child}")
         return size
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(\"{self.name}\",\"{self.parent_name}\",{self.children})"
+
+    def __str__(self) -> str:
+        return f"{self.name} (dir)"
+
 
 class File:
     def __init__(self, string: str):
-        self.name: str = None
-        self.size: int = None
+        self.name: str = string.split()[1]
+        self.size: int = int(string.split()[0])
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(\"{self.name}\",{self.size})"
+
+    def __str__(self) -> str:
+        return f"\"{self.size}\" {self.name}"
 
 
 class NoSpaceLeftOnDevice:
@@ -43,11 +57,10 @@ class NoSpaceLeftOnDevice:
             return string.startswith("$")
 
         def __parse_string(self, string: str):
-            # TODO Remove "$"
             args = string.split()
-            self.type = args[0]
-            if len(args) > 1:
-                self.dir_name = args[1]
+            self.type = args[1]
+            if len(args) > 2:
+                self.dir_name = args[2]
 
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "no_space_left_on_device.py"
@@ -83,28 +96,39 @@ class NoSpaceLeftOnDevice:
     def sum_sizes_of_directories(self, max_size: int = 10000):
         directories: dict = dict()
         with open(self.__filepath, "r") as read_file:
-            curr_dir: str = None
-            for line in read_file:
+            curr_dir_name: str = None
+            for line in (line.strip() for line in read_file):
                 if self.Command.is_command(line):
                     command = self.Command(line)
                     if command.type == self.Command.TYPE.CD:
                         if command.dir_name == "..":
-                            curr_dir = curr_dir.parent.dir_name
+                            curr_dir_name = directories[curr_dir_name].parent_name
                         else:
-                            directories[command.dir_name] = Directory(command.dir_name)
-                            curr_dir = command.dir_name
+                            directories[command.dir_name] = Directory(
+                                command.dir_name, curr_dir_name
+                            )
+                            curr_dir_name = command.dir_name
+                            # print(directories[curr_dir_name])
                     elif command.type == self.Command.TYPE.LS:
                         pass
                 else:
                     child = None
                     if line.startswith("dir"):
-                        directories["TODO"] = Directory(line)
-                        child = directories["TODO"]
+                        dir_name: str = line.split()[1]
+                        directories[dir_name] = Directory(
+                            dir_name, directories[curr_dir_name]
+                        )
+                        child = directories[dir_name]
                     else:
                         child = File(line)
-                    directories[curr_dir].add_child(child)
+                    directories[curr_dir_name].add_child(child)
 
-        return sum(d.get_size() for d in directories if d.get_size() <= max_size)
+        for d in directories.values():
+            print(d)
+            print(repr(d))
+            print()
+        return 0
+        # return sum(d.get_size() for d in directories.values() if d.get_size() <= max_size)
 
     def solve_part2(self):
         pass
