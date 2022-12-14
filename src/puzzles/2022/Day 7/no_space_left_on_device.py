@@ -3,8 +3,9 @@ from os import path
 
 
 class Directory:
-    def __init__(self, name: str):
+    def __init__(self, name: str, parent = None):
         self.name: str = name
+        self.parent = None
         self.children: dict = dict()
 
     def add_child(self, child):
@@ -23,9 +24,9 @@ class Directory:
 
 
 class File:
-    def __init__(self, name: str, size: int):
-        self.name: str = name
-        self.size: int = size
+    def __init__(self, string: str):
+        self.name: str = None
+        self.size: int = None
 
 
 class NoSpaceLeftOnDevice:
@@ -35,7 +36,18 @@ class NoSpaceLeftOnDevice:
             LS: str = "ls"
 
         def __init__(self, string: str):
-            self.type: str = None
+            self.__parse_string(string)
+
+        @staticmethod
+        def is_command(string: str) -> bool:
+            return string.startswith("$")
+
+        def __parse_string(self, string: str):
+            # TODO Remove "$"
+            args = string.split()
+            self.type = args[0]
+            if len(args) > 1:
+                self.dir_name = args[1]
 
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "no_space_left_on_device.py"
@@ -71,15 +83,27 @@ class NoSpaceLeftOnDevice:
     def sum_sizes_of_directories(self, max_size: int = 10000):
         directories: dict = dict()
         with open(self.__filepath, "r") as read_file:
-            curr_dir: Directory = None
+            curr_dir: str = None
             for line in read_file:
-                command = self.Command(line)
-                if command.type == self.Command.TYPE.CD:
-                    # TODO Attempt to create new Directory
-                    pass
-                elif command.type == self.Command.TYPE.LS:
-                    # TODO Add children to curr_dir
-                    pass
+                if self.Command.is_command(line):
+                    command = self.Command(line)
+                    if command.type == self.Command.TYPE.CD:
+                        if command.dir_name == "..":
+                            curr_dir = curr_dir.parent.dir_name
+                        else:
+                            directories[command.dir_name] = Directory(command.dir_name)
+                            curr_dir = command.dir_name
+                    elif command.type == self.Command.TYPE.LS:
+                        pass
+                else:
+                    child = None
+                    if line.startswith("dir"):
+                        directories["TODO"] = Directory(line)
+                        child = directories["TODO"]
+                    else:
+                        child = File(line)
+                    directories[curr_dir].add_child(child)
+
         return sum(d.get_size() for d in directories if d.get_size() <= max_size)
 
     def solve_part2(self):
