@@ -37,6 +37,10 @@ class NoSpaceLeftOnDevice:
             print(f"{self.solve_part2()}")
 
     def sum_sizes_of_directories(self, max_size: int = 100_000):
+        directory_sizes: dict = self.calculate_directory_sizes()
+        return sum(size for size in directory_sizes.values() if size <= max_size)
+
+    def calculate_directory_sizes(self) -> dict:
         directory_sizes = defaultdict(int)
         with open(self.__filepath, "r") as read_file:
             dir_list: list = list()
@@ -55,11 +59,12 @@ class NoSpaceLeftOnDevice:
                     case size, dir_path:
                         for dir_path in accumulate(dir_list):
                             directory_sizes[dir_path] += int(size)
+        return directory_sizes
 
-        return sum(size for size in directory_sizes.values() if size <= max_size)
-
-    def solve_part2(self):
-        pass
+    def size_of_directory_to_delete(self, available_space: int = 70_000_000, update_space: int = 30_000_000):
+        directory_sizes: dict = self.calculate_directory_sizes()
+        needed_space: int = sum(dir_size for dir_size in directory_sizes.values())
+        return min(size for size in directory_sizes.values() if size >= update_space)
 
 
 if __name__ == "__main__":
