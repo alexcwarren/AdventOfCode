@@ -2,45 +2,43 @@ from argparse import ArgumentParser
 from os import path
 
 
-class Directory:
-    ROOT: str = "/"
-
-    def __init__(self, name: str, parent_name: str = None):
+class Node:
+    def __init__(self, name: str, parent_dir):
         self.name: str = name
-        self.parent_name: str = parent_name
+        self.parent_dir: Node = parent_dir
+
+
+class Directory(Node):
+    def __init__(self, name: str, parent_dir: Node):
+        super().__init__(name, parent_dir)
         self.children: dict = dict()
 
-    def add_child(self, child):
+    def add_child(self, child: Node):
         self.children.setdefault(child.name, child)
 
     def get_size(self) -> int:
         size: int = 0
-        for child in self.children:
-            if isinstance(child, File) or child is File:
-                size += child.size
-            elif isinstance(child, Directory) or child is Directory:
+        for child in self.children.values():
+            if isinstance(child, Directory):
                 size += child.get_size()
-            else:
-                raise Exception(f"ERROR: Invalid type: {child}")
+            elif isinstance(child, File):
+                size += child.size
         return size
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(\"{self.name}\",\"{self.parent_name}\",{self.children})"
-
-    def __str__(self) -> str:
-        return f"{self.name} (dir)"
-
-
-class File:
-    def __init__(self, string: str):
-        self.name: str = string.split()[1]
-        self.size: int = int(string.split()[0])
+    def is_root_dir(self) -> bool:
+        return self.parent_dir is None
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(\"{self.name}\",{self.size})"
+        return f"{self.name} (dir, size={self.get_size()})"
 
-    def __str__(self) -> str:
-        return f"\"{self.size}\" {self.name}"
+
+class File(Node):
+    def __init__(self, name: str, size: int, parent_dir: Node):
+        super().__init__(name, parent_dir)
+        self.size: int = size
+
+    def __repr__(self) -> str:
+        return f"{self.name} (file, size={self.size})"
 
 
 class NoSpaceLeftOnDevice:
@@ -93,42 +91,43 @@ class NoSpaceLeftOnDevice:
         else:
             print(f"{self.solve_part2()}")
 
-    def sum_sizes_of_directories(self, max_size: int = 10000):
+    def sum_sizes_of_directories(self, max_size: int = 100_000):
         directories: dict = dict()
+        root_dir: Node = None
         with open(self.__filepath, "r") as read_file:
-            curr_dir_name: str = None
-            for line in (line.strip() for line in read_file):
-                if self.Command.is_command(line):
-                    command = self.Command(line)
-                    if command.type == self.Command.TYPE.CD:
-                        if command.dir_name == "..":
-                            curr_dir_name = directories[curr_dir_name].parent_name
-                        else:
-                            directories[command.dir_name] = Directory(
-                                command.dir_name, curr_dir_name
-                            )
-                            curr_dir_name = command.dir_name
-                            # print(directories[curr_dir_name])
-                    elif command.type == self.Command.TYPE.LS:
-                        pass
-                else:
-                    child = None
-                    if line.startswith("dir"):
-                        dir_name: str = line.split()[1]
-                        directories[dir_name] = Directory(
-                            dir_name, directories[curr_dir_name]
-                        )
-                        child = directories[dir_name]
+            curr_dir: Node = None
+            for i, line in enumerate(line.strip() for line in read_file):
+                try:
+                    if self.Command.is_command(line):
+                        command = self.Command(line)
+                        if command.type == self.Command.TYPE.CD:
+                            if command.dir_name == "/":
+                                root_dir = Directory(command.dir_name, None)
+                                directories[root_dir.name] = root_dir
+                                curr_dir = directories[root_dir.name]
+                            elif command.dir_name == "..":
+                                curr_dir = curr_dir.parent_dir
+                            else:
+                                directories.setdefault(command.dir_name, Directory(command.dir_name, curr_dir))
+                                curr_dir = directories[command.dir_name]
+                        elif command.type == self.Command.TYPE.LS:
+                            continue
                     else:
-                        child = File(line)
-                    directories[curr_dir_name].add_child(child)
+                        child_node: Node = None
+                        name: str = line.split()[1]
+                        if line.startswith("dir"):
+                            directories.setdefault(name, Directory(name, curr_dir))
+                            child_node = directories[name]
+                        else:
+                            file_size: int = int(line.split()[0])
+                            child_node = File(name, file_size, curr_dir)
+                        curr_dir.add_child(child_node)
+                except Exception as exc:
+                    print(i, f"\"{line}\"")
+                    print(exc)
+                    return 0
 
-        for d in directories.values():
-            print(d)
-            print(repr(d))
-            print()
-        return 0
-        # return sum(d.get_size() for d in directories.values() if d.get_size() <= max_size)
+        return sum(d.get_size() for d in directories.values() if d.get_size() <= max_size)
 
     def solve_part2(self):
         pass
