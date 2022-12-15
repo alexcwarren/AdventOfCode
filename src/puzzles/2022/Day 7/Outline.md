@@ -1,5 +1,7 @@
 # Day 7: No Space Left On Device
 
+###### [LOOKED UP SOLUTION]
+
 <https://adventofcode.com/2022/day/7>
 
 ## Part 1
