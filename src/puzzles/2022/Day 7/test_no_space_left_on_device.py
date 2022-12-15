@@ -13,4 +13,4 @@ def test_sample_input_part1(script):
 
 
 def test_sample_input_part2(script):
-    pass
+    assert script.size_of_directory_to_delete() == 24933642
