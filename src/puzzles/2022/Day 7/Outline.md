@@ -87,7 +87,7 @@ The total sizes of the directories above can be found as follows:
 - Directory `d` has total size **24933642**.
 - As the outermost directory, `/` contains every file. Its total size is **48381165**, the sum of the size of every file.
 
-To begin, find all of the directories with a total size of **at most 100000**, then calculate the sum of their total sizes. In the example above, these directories are `a` and `e`; the sum of their total sizes is **`95437`** (94853 + 584). (As in this example, this process can count files more than once!)
+To begin, find all of the directories with a total size of **at most 100,000**, then calculate the sum of their total sizes. In the example above, these directories are `a` and `e`; the sum of their total sizes is **`95437`** (94853 + 584). (As in this example, this process can count files more than once!)
 
 Find all of the directories with a total size of at most 100000. **What is the sum of the total sizes of those directories?**
 
