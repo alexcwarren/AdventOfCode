@@ -1,5 +1,7 @@
 from argparse import ArgumentParser
 from os import path
+from operator import mul
+from functools import reduce
 
 
 class TreetopTreeHouse:
@@ -93,7 +95,49 @@ class TreetopTreeHouse:
         return all(other_tree_height < tree_height for other_tree_height in tree_line)
 
     def solve_part2(self):
-        pass
+        self.parse_tree_heights_map()
+
+        scenic_scores: list = list()
+        for row, tree_line in enumerate(self.tree_heights_map[1:-1], 1):
+            for col, tree_height in enumerate(tree_line[1:-1], 1):
+                scenic_scores.append(
+                    self.calculate_scenic_score(tree_height, row, col)
+                )
+
+        return max(scenic_scores)
+
+    def calculate_scenic_score(self, tree_height: int, row_idx: int, col_idx: int) -> int:
+        tree_line_row: list = self.tree_heights_map[row_idx]
+        tree_line_col: list = [
+            self.tree_heights_map[row][col_idx]
+            for row in range(len(self.tree_heights_map))
+        ]
+
+        tree_lines: list = list()
+        # Check other trees North of current tree
+        tree_lines.append(tree for tree in reversed(tree_line_col[:row_idx]))
+        # Check other trees South of current tree
+        tree_lines.append(tree for tree in tree_line_col[row_idx + 1:])
+        # Check other trees East of current tree
+        tree_lines.append(tree for tree in tree_line_row[col_idx + 1:])
+        # Check other trees West of current tree
+        tree_lines.append(tree for tree in reversed(tree_line_row[:col_idx]))
+
+        return reduce(
+            mul,
+            (
+                self.count_visible_trees(tree_height, tree_line)
+                for tree_line in tree_lines
+            )
+        )
+
+    def count_visible_trees(self, tree_height: int, tree_line: list) -> int:
+        num_visible_trees: int = 0
+        for other_tree_height in tree_line:
+            num_visible_trees += 1
+            if other_tree_height >= tree_height:
+                break
+        return num_visible_trees
 
 
 if __name__ == "__main__":
