@@ -42,7 +42,7 @@ class TreetopTreeHouse:
 
         for row, tree_line in enumerate(self.tree_heights_map[1:-1], 1):
             for col, tree_height in enumerate(tree_line[1:-1], 1):
-                num_visible_trees += 1 if self.is_tree_visible_everywhere(
+                num_visible_trees += 1 if self.is_tree_visible(
                     tree_height, row, col
                 ) else 0
 
@@ -57,7 +57,7 @@ class TreetopTreeHouse:
         self.num_rows: int = len(self.tree_heights_map)
         self.num_cols: int = len(self.tree_heights_map[0])
 
-    def is_tree_visible_everywhere(self, tree_height: int, row_idx: int, col_idx: int) -> bool:
+    def is_tree_visible(self, tree_height: int, row_idx: int, col_idx: int) -> bool:
         tree_line_row: list = self.tree_heights_map[row_idx]
         tree_line_col: list = [
             self.tree_heights_map[row][col_idx]
@@ -65,31 +65,31 @@ class TreetopTreeHouse:
         ]
 
         # Check other trees North of current tree
-        tree_is_visible: bool = self.is_tree_visible(
+        tree_is_visible: bool = self.is_tree_visible_one_way(
             tree_height, tree_line_col[:row_idx]
         )
         if tree_is_visible: return True
 
         # Check other trees South of current tree
-        tree_is_visible = tree_is_visible or self.is_tree_visible(
+        tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
             tree_height, tree_line_col[row_idx + 1:]
         )
         if tree_is_visible: return True
 
         # Check other trees East of current tree
-        tree_is_visible = tree_is_visible or self.is_tree_visible(
+        tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
             tree_height, tree_line_row[col_idx + 1:]
         )
         if tree_is_visible: return True
 
         # Check other trees West of current tree
-        tree_is_visible = tree_is_visible or self.is_tree_visible(
+        tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
             tree_height, tree_line_row[:col_idx]
         )
 
         return tree_is_visible
 
-    def is_tree_visible(self, tree_height: int, tree_line: list) -> bool:
+    def is_tree_visible_one_way(self, tree_height: int, tree_line: list) -> bool:
         return all(other_tree_height < tree_height for other_tree_height in tree_line)
 
     def solve_part2(self):
