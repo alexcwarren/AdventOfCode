@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
-from os import path
-from operator import mul
 from functools import reduce
+from operator import mul
+from os import path
 
 
 class TreetopTreeHouse:
@@ -36,7 +36,7 @@ class TreetopTreeHouse:
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
+    def solve_part1(self) -> int:
         self.parse_tree_heights_map()
 
         # All trees on the edge are visible
@@ -44,9 +44,9 @@ class TreetopTreeHouse:
 
         for row, tree_line in enumerate(self.tree_heights_map[1:-1], 1):
             for col, tree_height in enumerate(tree_line[1:-1], 1):
-                num_visible_trees += 1 if self.is_tree_visible(
-                    tree_height, row, col
-                ) else 0
+                num_visible_trees += (
+                    1 if self.is_tree_visible(tree_height, row, col) else 0
+                )
 
         return num_visible_trees
 
@@ -70,19 +70,22 @@ class TreetopTreeHouse:
         tree_is_visible: bool = self.is_tree_visible_one_way(
             tree_height, tree_line_col[:row_idx]
         )
-        if tree_is_visible: return True
+        if tree_is_visible:
+            return True
 
         # Check other trees South of current tree
         tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
-            tree_height, tree_line_col[row_idx + 1:]
+            tree_height, tree_line_col[row_idx + 1 :]
         )
-        if tree_is_visible: return True
+        if tree_is_visible:
+            return True
 
         # Check other trees East of current tree
         tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
-            tree_height, tree_line_row[col_idx + 1:]
+            tree_height, tree_line_row[col_idx + 1 :]
         )
-        if tree_is_visible: return True
+        if tree_is_visible:
+            return True
 
         # Check other trees West of current tree
         tree_is_visible = tree_is_visible or self.is_tree_visible_one_way(
@@ -100,13 +103,13 @@ class TreetopTreeHouse:
         scenic_scores: list = list()
         for row, tree_line in enumerate(self.tree_heights_map[1:-1], 1):
             for col, tree_height in enumerate(tree_line[1:-1], 1):
-                scenic_scores.append(
-                    self.calculate_scenic_score(tree_height, row, col)
-                )
+                scenic_scores.append(self.calculate_scenic_score(tree_height, row, col))
 
         return max(scenic_scores)
 
-    def calculate_scenic_score(self, tree_height: int, row_idx: int, col_idx: int) -> int:
+    def calculate_scenic_score(
+        self, tree_height: int, row_idx: int, col_idx: int
+    ) -> int:
         tree_line_row: list = self.tree_heights_map[row_idx]
         tree_line_col: list = [
             self.tree_heights_map[row][col_idx]
@@ -117,9 +120,9 @@ class TreetopTreeHouse:
         # Check other trees North of current tree
         tree_lines.append(tree for tree in reversed(tree_line_col[:row_idx]))
         # Check other trees South of current tree
-        tree_lines.append(tree for tree in tree_line_col[row_idx + 1:])
+        tree_lines.append(tree for tree in tree_line_col[row_idx + 1 :])
         # Check other trees East of current tree
-        tree_lines.append(tree for tree in tree_line_row[col_idx + 1:])
+        tree_lines.append(tree for tree in tree_line_row[col_idx + 1 :])
         # Check other trees West of current tree
         tree_lines.append(tree for tree in reversed(tree_line_row[:col_idx]))
 
@@ -128,7 +131,7 @@ class TreetopTreeHouse:
             (
                 self.count_visible_trees(tree_height, tree_line)
                 for tree_line in tree_lines
-            )
+            ),
         )
 
     def count_visible_trees(self, tree_height: int, tree_line: list) -> int:
