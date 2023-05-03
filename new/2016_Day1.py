@@ -43,33 +43,59 @@ visit twice is 4 blocks away, due East.
 How many blocks away is the first location you visit twice?
 """
 
+class Common:
+    SIDE_MAP: dict[str, int] = {
+        "R": -1,
+        "L": 1
+    }
+    HORIZONTAL: str = "EW"
+    NEGATIVE: str = "WS"
 
-directions: deque = deque("NESW")
-direction = lambda : directions[0]
-side_map: dict[str, int] = {
-    "R": -1,
-    "L": 1
-}
-horizontal: str = "NS"
+    def __init__(self):
+        self.directions: deque = deque("NESW")
+        print(self.directions)
+
+    def direction(self):
+        return self.directions[0]
 
 
 def solve1(instructions: str) -> int:
+    c = Common()
     num_blocks: int = 0
     x: int = 0
     y: int = 0
     for instruction in instructions.replace(" ", "").split(","):
         side, *distance_str = instruction
         distance: int = int("".join(distance_str))
-        directions.rotate(side_map[side])
-        if direction() in horizontal:
-            x += distance * (-1 if direction() == "S" else 1)
+        c.directions.rotate(c.SIDE_MAP[side])
+        if c.direction() in c.HORIZONTAL:
+            x += distance * (-1 if c.direction() == "W" else 1)
         else:
-            y += distance * (-1 if direction() == "W" else 1)
+            y += distance * (-1 if c.direction() == "S" else 1)
     num_blocks = abs(x) + abs(y)
     return num_blocks
 
 
 def solve2(instructions: str) -> int:
+    c = Common()
+    pos: list[int] = [0, 0]
+    visited: dict[tuple[int], bool] = {(0, 0): True}
+    for instruction in instructions.replace(" ", "").split(","):
+        side, *distance_str = instruction
+        distance: int = int("".join(distance_str))
+        c.directions.rotate(c.SIDE_MAP[side])
+        sign: int = 1
+        if c.direction() in c.NEGATIVE:
+            sign = -1
+        for _ in range(1, distance + 1):
+            if c.direction() in c.HORIZONTAL:
+                pos[0] += sign
+            else:
+                pos[1] += sign
+            pos_tuple = tuple(pos)
+            if pos_tuple in visited:
+                return sum(abs(p) for p in pos)
+            visited[pos_tuple] = True
     return 0
 
 
@@ -82,4 +108,10 @@ if __name__ == "__main__":
     assert solve1("R5, L5, R5, R3") == 12
     with open(day1.input_path) as in_file:
         print(f"{solve1(in_file.read())} blocks")
+    print()
+
+    print("--- Part 2 ---")
+    assert solve2("R8, R4, R4, R8") == 4
+    with open(day1.input_path) as in_file:
+        print(f"{solve2(in_file.read())} blocks")
     print()
