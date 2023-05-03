@@ -6,18 +6,36 @@ class Coordinate:
     def __init__(self, x: int, y: int):
         self.x: int = x
         self.y: int = y
+        self.__coords = [self.x, self.y]
+
+    def delta_x(self, other) -> int:
+        return self.x - other.x
+
+    def delta_y(self, other) -> int:
+        return self.y - other.y
+
+    def is_not_adjacent_to(self, other) -> bool:
+        return self.x != other.x and self.y != other.y
 
     def __add__(self, other):
         return Coordinate(self.x + other.x, self.y + other.y)
 
-    def to_tuple(self) -> tuple:
-        return tuple(self.x, self.y)
+    def __iter__(self) -> tuple:
+        for coord in self.__coords:
+            yield coord
 
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
 
 
 class RopeBridge:
+    MOVES = {
+        "U": Coordinate(0, -1),
+        "D": Coordinate(0, 1),
+        "L": Coordinate(-1, 0),
+        "R": Coordinate(1, 0),
+    }
+
     def __init__(self, filepath: str = None, is_part1: bool = True):
         prog_name: str = "rope_bridge.py"
         self.is_part1: bool = is_part1
@@ -49,29 +67,8 @@ class RopeBridge:
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self, delta_threshold: int = 1):
-        tail_visits: set = set()
-
-        with open(self.__filepath, "r") as read_file:
-            head = Coordinate(0, 0)
-            tail = Coordinate(0, 0)
-
-            for line in read_file:
-                move, num_repeats = self.parse_motion(line)
-                for _ in range(num_repeats):
-                    if abs(head.x - tail.x) > delta_threshold or abs(head.y - tail.y) > delta_threshold:
-                        if head.x != tail.x and head.y != tail.y:
-                            pass
-                            # Move diagonally
-                        else:
-                            # Move vertically/horizontally
-                            tail += move
-                        tail_visits.add(tail)
-
-
-    def parse_motion(self, line: str) -> tuple:
-        parameters = line.strip().split(" ")
-        return parameters[0], int(parameters[1])
+    def solve_part1(self):
+        pass
 
     def solve_part2(self):
         pass
