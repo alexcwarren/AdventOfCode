@@ -48,6 +48,8 @@ desk. What is the bathroom code?
 
 
 def solve1(instructions: str) -> str:
+    for line in instructions.split("\n"):
+        print(line)
     return ""
 
 
@@ -63,8 +65,7 @@ if __name__ == "__main__":
 """ULL
 RRDDD
 LURDL
-UUUUD
-"""
+UUUUD"""
     ) == 1985
     with open(day2.input_path) as in_file:
         print(f"{solve1(in_file.read())}")
