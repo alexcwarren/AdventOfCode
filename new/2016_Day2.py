@@ -47,8 +47,8 @@ desk. What is the bathroom code?
 """
 
 
-def solve1():
-    pass
+def solve1(instructions: str) -> str:
+    return ""
 
 
 def solve2():
@@ -59,3 +59,13 @@ if __name__ == "__main__":
     day2 = Day(__file__)
 
     print("--- Part 1 ---")
+    assert solve1(
+"""ULL
+RRDDD
+LURDL
+UUUUD
+"""
+    ) == 1985
+    with open(day2.input_path) as in_file:
+        print(f"{solve1(in_file.read())}")
+    print()
