@@ -67,8 +67,32 @@ class RopeBridge:
         else:
             print(f"{self.solve_part2()}")
 
-    def solve_part1(self):
-        pass
+    def solve_part1(self, delta_threshold: int = 1):
+        head: Coordinate = Coordinate(0, 0)
+        tail: Coordinate = Coordinate(0, 0)
+
+        tail_visits: set = set()
+        with open(self.__filepath, "r") as read_file:
+            for line in read_file:
+                move_dir, num_repeats = self.parse_motion(line)
+                curr_move: Coordinate = self.MOVES[move_dir]
+                for _ in range(num_repeats):
+                    head += curr_move
+                    delta_x = head.delta_x(tail)
+                    delta_y = head.delta_y(tail)
+                    if max(abs(delta_x), abs(delta_y)) > delta_threshold:
+                        if head.is_not_adjacent_to(tail):
+                            if abs(delta_x) > abs(delta_y):
+                                tail += Coordinate(0, delta_y)
+                            else:
+                                tail += Coordinate(delta_x, 0)
+                        tail += curr_move
+                    tail_visits.add(tuple(tail))
+        return len(tail_visits)
+
+    def parse_motion(self, line: str) -> tuple:
+        motion: list = line.strip().split(" ")
+        return motion[0], int(motion[1])
 
     def solve_part2(self):
         pass
