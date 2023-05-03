@@ -1,3 +1,4 @@
+from collections import deque
 from Day import Day
 
 
@@ -43,14 +44,33 @@ How many blocks away is the first location you visit twice?
 """
 
 
+directions: deque = deque("NESW")
+direction = lambda : directions[0]
+side_map: dict[str, int] = {
+    "R": -1,
+    "L": 1
+}
+horizontal: str = "NS"
+
+
 def solve1(instructions: str) -> int:
     num_blocks: int = 0
-    print(num_blocks)
+    x: int = 0
+    y: int = 0
+    for instruction in instructions.replace(" ", "").split(","):
+        side, *distance_str = instruction
+        distance: int = int("".join(distance_str))
+        directions.rotate(side_map[side])
+        if direction() in horizontal:
+            x += distance * (-1 if direction() == "S" else 1)
+        else:
+            y += distance * (-1 if direction() == "W" else 1)
+    num_blocks = abs(x) + abs(y)
     return num_blocks
 
 
-def solve2():
-    pass
+def solve2(instructions: str) -> int:
+    return 0
 
 
 if __name__ == "__main__":
