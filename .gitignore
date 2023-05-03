@@ -135,3 +135,6 @@ dmypy.json
 # Markdown Converter
 src/create_day/markdown_converter/html.txt
 src/create_day/markdown_converter/markdown.md
+
+# Advent of Code - exclude input
+new/input/
