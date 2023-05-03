@@ -43,8 +43,10 @@ How many blocks away is the first location you visit twice?
 """
 
 
-def solve1():
-    pass
+def solve1(instructions: str) -> int:
+    num_blocks: int = 0
+    print(num_blocks)
+    return num_blocks
 
 
 def solve2():
@@ -55,3 +57,9 @@ if __name__ == "__main__":
     day1 = Day(__file__)
 
     print("--- Part 1 ---")
+    assert solve1("R2, L3") == 5
+    assert solve1("R2, R2, R2") == 2
+    assert solve1("R5, L5, R5, R3") == 12
+    with open(day1.input_path) as in_file:
+        print(f"{solve1(in_file.read())} blocks")
+    print()
