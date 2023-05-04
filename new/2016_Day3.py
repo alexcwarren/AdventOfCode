@@ -65,29 +65,35 @@ def solve2(triangle_data: str) -> int:
     return num_valid_triangles
 
 
-
 if __name__ == "__main__":
     day3 = Day(__file__)
 
     print("--- Part 1 ---")
     assert solve1("5 10 25") == 0
-    assert solve1(
-        """3 2 4
+    assert (
+        solve1(
+            """3 2 4
 12 10 25
-30 10 25""") == 2
+30 10 25"""
+        )
+        == 2
+    )
     with open(day3.input_path) as in_file:
         print(solve1(in_file.read()))
     print()
 
     print("--- Part 2 ---")
-    assert solve2(
-        """  5  12 100
+    assert (
+        solve2(
+            """  5  12 100
  10  10  99
  25  25 201
   3  30 200
   2  10 100
   4  25 101"""
-    ) == 3
+        )
+        == 3
+    )
     with open(day3.input_path) as in_file:
         print(solve2(in_file.read()))
     print()
