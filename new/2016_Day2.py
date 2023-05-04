@@ -115,7 +115,49 @@ def solve1(instructions: str) -> str:
 
 
 def solve2(instructions: str) -> str:
-    return ""
+    code: str = ""
+    c = Common()
+    """
+    1
+  2 3 4
+5 6 7 8 9
+  A B C
+    D
+    """
+    KEY1: dict[str, str] = {c.VAL: "1", c.U: "1", c.D: "3", c.L: "1", c.R: "1"}
+    KEY2: dict[str, str] = {c.VAL: "2", c.U: "2", c.D: "6", c.L: "2", c.R: "3"}
+    KEY3: dict[str, str] = {c.VAL: "3", c.U: "1", c.D: "7", c.L: "2", c.R: "4"}
+    KEY4: dict[str, str] = {c.VAL: "4", c.U: "4", c.D: "8", c.L: "3", c.R: "4"}
+    KEY5: dict[str, str] = {c.VAL: "5", c.U: "5", c.D: "5", c.L: "5", c.R: "6"}
+    KEY6: dict[str, str] = {c.VAL: "6", c.U: "2", c.D: "A", c.L: "5", c.R: "7"}
+    KEY7: dict[str, str] = {c.VAL: "7", c.U: "3", c.D: "B", c.L: "6", c.R: "8"}
+    KEY8: dict[str, str] = {c.VAL: "8", c.U: "4", c.D: "C", c.L: "7", c.R: "9"}
+    KEY9: dict[str, str] = {c.VAL: "9", c.U: "9", c.D: "9", c.L: "8", c.R: "9"}
+    KEYA: dict[str, str] = {c.VAL: "A", c.U: "6", c.D: "A", c.L: "A", c.R: "B"}
+    KEYB: dict[str, str] = {c.VAL: "B", c.U: "7", c.D: "D", c.L: "A", c.R: "C"}
+    KEYC: dict[str, str] = {c.VAL: "C", c.U: "8", c.D: "C", c.L: "B", c.R: "C"}
+    KEYD: dict[str, str] = {c.VAL: "D", c.U: "B", c.D: "D", c.L: "D", c.R: "D"}
+    KEYS: dict[str, dict] = {
+        "1": KEY1,
+        "2": KEY2,
+        "3": KEY3,
+        "4": KEY4,
+        "5": KEY5,
+        "6": KEY6,
+        "7": KEY7,
+        "8": KEY8,
+        "9": KEY9,
+        "A": KEYA,
+        "B": KEYB,
+        "C": KEYC,
+        "D": KEYD,
+    }
+    key_val: str = "5"
+    for line in instructions.split("\n"):
+        for move in line:
+            key_val = KEYS[key_val][move]
+        code += key_val
+    return code
 
 
 if __name__ == "__main__":
@@ -136,9 +178,15 @@ UUUUD"""
     print()
 
     print("--- Part 2 ---")
-    assert solve2(
-        """ULL
+    assert (
+        solve2(
+            """ULL
 RRDDD
 LURDL
 UUUUD"""
-    ) == "5DB3"
+        )
+        == "5DB3"
+    )
+    with open(day2.input_path) as in_file:
+        print(solve2(in_file.read()))
+    print()
