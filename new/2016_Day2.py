@@ -114,8 +114,8 @@ def solve1(instructions: str) -> str:
     return code
 
 
-def solve2():
-    pass
+def solve2(instructions: str) -> str:
+    return ""
 
 
 if __name__ == "__main__":
@@ -134,3 +134,11 @@ UUUUD"""
     with open(day2.input_path) as in_file:
         print(f"{solve1(in_file.read())}")
     print()
+
+    print("--- Part 2 ---")
+    assert solve2(
+        """ULL
+RRDDD
+LURDL
+UUUUD"""
+    ) == "5DB3"
