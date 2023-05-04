@@ -48,8 +48,22 @@ def solve1(triangles: str) -> int:
     return num_valid_triangles
 
 
-def solve2(triangles: str) -> int:
-    return 0
+def solve2(triangle_data: str) -> int:
+    num_valid_triangles: int = 0
+    lines: list[str] = triangle_data.splitlines()
+    NUM_COLUMNS: int = len(lines[0].strip().split())
+    triangle: list[int] = list()
+    for col in range(NUM_COLUMNS):
+        for line in lines:
+            if len(triangle) < 3:
+                triangle.append(int(line.strip().split()[col]))
+            if len(triangle) == 3:
+                a, b, c = sorted(triangle)
+                if a + b > c:
+                    num_valid_triangles += 1
+                triangle.clear()
+    return num_valid_triangles
+
 
 
 if __name__ == "__main__":
@@ -74,3 +88,6 @@ if __name__ == "__main__":
   2  10 100
   4  25 101"""
     ) == 3
+    with open(day3.input_path) as in_file:
+        print(solve2(in_file.read()))
+    print()
