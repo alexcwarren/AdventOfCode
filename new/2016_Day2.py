@@ -47,10 +47,43 @@ desk. What is the bathroom code?
 """
 
 
+class Common:
+    __VAL: str = "val"
+    __U: str = "U"
+    __D: str = "D"
+    __L: str = "L"
+    __R: str = "R"
+    KEY1: dict[str, int] = {__VAL: 1, __U: 1, __D: 4, __L: 1, __R: 2}
+    KEY2: dict[str, int] = {__VAL: 2, __U: 2, __D: 5, __L: 1, __R: 3}
+    KEY3: dict[str, int] = {__VAL: 3, __U: 3, __D: 6, __L: 2, __R: 3}
+    KEY4: dict[str, int] = {__VAL: 4, __U: 1, __D: 7, __L: 4, __R: 5}
+    KEY5: dict[str, int] = {__VAL: 5, __U: 2, __D: 8, __L: 4, __R: 6}
+    KEY6: dict[str, int] = {__VAL: 6, __U: 3, __D: 9, __L: 5, __R: 6}
+    KEY7: dict[str, int] = {__VAL: 7, __U: 4, __D: 7, __L: 7, __R: 8}
+    KEY8: dict[str, int] = {__VAL: 8, __U: 5, __D: 8, __L: 7, __R: 9}
+    KEY9: dict[str, int] = {__VAL: 9, __U: 6, __D: 9, __L: 8, __R: 9}
+    KEYS: dict[int, dict] = {
+        1: KEY1,
+        2: KEY2,
+        3: KEY3,
+        4: KEY4,
+        5: KEY5,
+        6: KEY6,
+        7: KEY7,
+        8: KEY8,
+        9: KEY9,
+    }
+
+
 def solve1(instructions: str) -> str:
+    code: str = ""
+    c = Common()
+    key_val: int = 5
     for line in instructions.split("\n"):
-        print(line)
-    return ""
+        for move in line:
+            key_val = c.KEYS[key_val][move]
+        code += str(key_val)
+    return code
 
 
 def solve2():
@@ -61,12 +94,15 @@ if __name__ == "__main__":
     day2 = Day(__file__)
 
     print("--- Part 1 ---")
-    assert solve1(
-"""ULL
+    assert (
+        solve1(
+            """ULL
 RRDDD
 LURDL
 UUUUD"""
-    ) == 1985
+        )
+        == "1985"
+    )
     with open(day2.input_path) as in_file:
         print(f"{solve1(in_file.read())}")
     print()
