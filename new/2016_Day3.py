@@ -48,8 +48,8 @@ def solve1(triangles: str) -> int:
     return num_valid_triangles
 
 
-def solve2():
-    pass
+def solve2(triangles: str) -> int:
+    return 0
 
 
 if __name__ == "__main__":
@@ -64,3 +64,13 @@ if __name__ == "__main__":
     with open(day3.input_path) as in_file:
         print(solve1(in_file.read()))
     print()
+
+    print("--- Part 2 ---")
+    assert solve2(
+        """  5  12 100
+ 10  10  99
+ 25  25 201
+  3  30 200
+  2  10 100
+  4  25 101"""
+    ) == 3
