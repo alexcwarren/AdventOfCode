@@ -21,8 +21,8 @@ In your puzzle input, how many of the listed triangles are possible?
 """
 
 
-def solve1():
-    pass
+def solve1(sides: str) -> bool:
+    return False
 
 
 def solve2():
@@ -33,3 +33,6 @@ if __name__ == "__main__":
     day3 = Day(__file__)
 
     print("--- Part 1 ---")
+    assert solve1("5 10 25") == False
+    assert solve1("1 2 4") == True
+    assert solve1("12 10 21") == False
