@@ -21,8 +21,13 @@ In your puzzle input, how many of the listed triangles are possible?
 """
 
 
-def solve1(sides: str) -> bool:
-    return False
+def solve1(triangles: str) -> int:
+    num_valid_triangles: int = 0
+    for sides in triangles.splitlines():
+        a, b, c = sorted(int(s) for s in sides.strip().split())
+        if a + b > c:
+            num_valid_triangles += 1
+    return num_valid_triangles
 
 
 def solve2():
@@ -33,6 +38,11 @@ if __name__ == "__main__":
     day3 = Day(__file__)
 
     print("--- Part 1 ---")
-    assert solve1("5 10 25") == False
-    assert solve1("1 2 4") == True
-    assert solve1("12 10 21") == False
+    assert solve1("5 10 25") == 0
+    assert solve1(
+        """3 2 4
+12 10 25
+30 10 25""") == 2
+    with open(day3.input_path) as in_file:
+        print(solve1(in_file.read()))
+    print()
