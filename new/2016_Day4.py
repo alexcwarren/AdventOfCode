@@ -1,4 +1,5 @@
-from collections import Counter
+from collections import Counter, deque
+from string import ascii_lowercase
 
 from Day import Day
 
@@ -60,8 +61,29 @@ def solve1(room_data: str) -> int:
     return sum_sector_ids
 
 
-def solve2():
-    pass
+def solve2(room_data: str, desired_room_name: str) -> str:
+    for line in room_data.splitlines():
+        room, checksum = line[:-1].split("[")
+        *encrypted_room_name, sector_id = room.split("-")
+        room_name_counter = Counter("".join(encrypted_room_name))
+        top_letters: list[str] = list(room_name_counter.keys())
+        top_letters_str: str = "".join(
+            sorted(
+                sorted(top_letters), key=lambda x: room_name_counter[x], reverse=True
+            )
+        )
+        if top_letters_str[:5] == checksum:
+            room_name: str = " ".join(encrypted_room_name)
+            decrypted_room_name: str = ""
+            for letter in room_name:
+                alphabet = deque(ascii_lowercase)
+                if letter != " ":
+                    index: int = alphabet.index(letter)
+                    alphabet.rotate(-index - (int(sector_id) % 26))
+                    letter = alphabet[0]
+                decrypted_room_name += letter
+            if desired_room_name in decrypted_room_name:
+                return sector_id
 
 
 if __name__ == "__main__":
@@ -82,3 +104,7 @@ totally-real-room-200[decoy]"""
     print()
 
     print("--- Part 2 ---")
+    assert solve2("qzmt-zixmtkozy-ivhz-343[zimth]", "very encrypted name") == "343"
+    with open(day4.input_path) as in_file:
+        print(solve2(in_file.read(), "northpole object storage"))
+    print()
