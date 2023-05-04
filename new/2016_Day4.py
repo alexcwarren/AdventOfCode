@@ -4,7 +4,7 @@ from Day import Day
 --- Day 4: Security Through Obscurity ---
 Finally, you come across an information kiosk with a list of rooms. Of course,
 the list is encrypted and full of decoy data, but the instructions to decode the
- list are barely hidden nearby. Better remove the decoy data first.
+list are barely hidden nearby. Better remove the decoy data first.
 
 Each room consists of an encrypted name (lowercase letters separated by dashes)
 followed by a dash, a sector ID, and a checksum in square brackets.
@@ -24,8 +24,8 @@ What is the sum of the sector IDs of the real rooms?
 """
 
 
-def solve():
-    pass
+def solve1(room_data: str) -> int:
+    return 0
 
 
 def solve2():
@@ -36,3 +36,9 @@ if __name__ == "__main__":
     day4 = Day(__file__)
 
     print("--- Part 1 ---")
+    assert solve1(
+        """aaaaa-bbb-z-y-x-123[abxyz]
+a-b-c-d-e-f-g-h-987[abcde]
+not-a-real-room-404[oarel]
+totally-real-room-200[decoy]"""
+    ) == 1514
