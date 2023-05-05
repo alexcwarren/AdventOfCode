@@ -13,5 +13,6 @@ class Day:
 if __name__ == "__main__":
     print("Testing Day module...")
     day = Day(__file__)
-    assert day.input_path
+    print(day.input_path)
+    assert day.input_path.exists()
     print("SUCCESS\n")
